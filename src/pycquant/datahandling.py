@@ -3,7 +3,7 @@ from utils import init_strategy_results_df
 import datetime as dt
 import os
 
-def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct = False, save_to_csv_path = ''):
+def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct_last_close=False, calc_pct_last_open=False, calc_pct_current_open=False, save_to_csv_path = ''):
 
     # Read .csv file from a local path based on the ticker name and timeframe name
     df = pd.read_csv('{}/{}_{}.csv'.format(csv_original_path, tf, symbol))
@@ -16,11 +16,21 @@ def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct = False, save_to
     df.drop(['spread', 'real_volume', 'tick_volume'], axis=1, inplace=True)
 
     # Calculate percentage change based on the last close value
-    if calc_pct:
+    if calc_pct_last_close:
         df['high_pct']  = (df['high']  - df['close'].shift(1)) / df['close'].shift(1)
         df['low_pct']   = (df['low']   - df['close'].shift(1)) / df['close'].shift(1)
         df['close_pct'] = (df['close'] - df['close'].shift(1)) / df['close'].shift(1)
     
+    if calc_pct_last_open:
+        df['high_pct']  = (df['high']  - df['open'].shift(1)) / df['open'].shift(1)
+        df['low_pct']   = (df['low']   - df['open'].shift(1)) / df['open'].shift(1)
+        df['close_pct'] = (df['close'] - df['open'].shift(1)) / df['open'].shift(1)
+    
+    if calc_pct_current_open:
+        df['high_pct']  = (df['high']  - df['open']) / df['open']
+        df['low_pct']   = (df['low']   - df['open']) / df['open']
+        df['close_pct'] = (df['close'] - df['open']) / df['open']
+
     # Create a target column with only 0
     df['target'] = 0
     df['pct_target'] = 0
@@ -52,6 +62,7 @@ def read_analysis_csv_data(csv_file_path, last_analysis_No):
     print(f'No. of strategies: {len(df)}')
     print('=========================================')
 
+    return df
 
 
 # ========== TO UPDATE BELOW ==============

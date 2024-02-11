@@ -36,7 +36,15 @@ def get_last_x_trades(df, No_Trades=5):
     last_x_trades = [1 if target > 0 else (-1 if target <0 else 'X') for target in last_x_trades['pct_target']]    
 
     return last_x_trades
-    
+
+def drop_data_before_initial_date(df, date):
+
+    date = pd.to_datetime(date)
+    df = df[~(df.index < date)]
+
+    return df
+
+
 def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_trades=5):
    
     #if use_pct_target == True:
@@ -117,7 +125,7 @@ def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_
     df_results.drop(df_results.index[df_results['No_Trades'] < min_No_trade], inplace=True)
 
     # Drop results with success_rate between minimum success_rate
-    index_drop = df_results[(df_results['%_tp'] > (1-success_rate)) & (df_results['%_tp'] < success_rate)].index
+    index_drop = df_results[(df_results['%_tp'] > (round(1-success_rate,4))) & (df_results['%_tp'] < success_rate)].index
     df_results.drop(index_drop, inplace=True)
 
     # Drop results with sl above the maximum allowed
@@ -126,6 +134,7 @@ def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_
 
     index_drop = df_results[(df_results['Max_%_tp'] > max_allowed_sl) & (df_results['%_tp'] <= (1-success_rate))].index
     df_results.drop(index_drop, inplace=True)
+
 
     return df_results
 
