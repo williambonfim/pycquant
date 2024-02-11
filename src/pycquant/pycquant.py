@@ -49,8 +49,8 @@ class QuantStrategies:
         df = drop_data_before_initial_date(df, date_0)
 
         # Set target column to trade result if a condition is met then
-        df['pct_target'] = pd.Series(0, index = df.index).mask(df['low_pct'] < target_down, df['close_pct'] - target_down)
-        df['target']     = pd.Series(0, index = df.index).mask(df['low_pct'] < target_down, df['close'] - df['close'].shift(1) * (1+target_down))
+        df['pct_target'] = pd.Series(0, index = df.index).mask((df['low_pct'] < target_down) & (df['open'].shift(1) <= df['high']) & (df['open'].shift(1) >= df['low']), df['close_pct'] - target_down)
+        df['target']     = pd.Series(0, index = df.index).mask((df['low_pct'] < target_down) & (df['open'].shift(1) <= df['high']) & (df['open'].shift(1) >= df['low']), df['close'] - df['open'].shift(1) * (1+target_down))
 
         entry_criteria = f'{round(target_down*100, 2)}% last OPEN candle'
         exit_criteria = 'closed candle'
@@ -68,8 +68,8 @@ class QuantStrategies:
         df = drop_data_before_initial_date(df, date_0)
 
         # Set target column to trade result if a condition is met then
-        df['pct_target'] = pd.Series(0, index = df.index).mask(df['high_pct'] > target_up, target_up - df['close_pct'])
-        df['target']     = pd.Series(0, index = df.index).mask(df['high_pct'] > target_up, df['close'].shift(1) * (1+target_up) - df['close'])
+        df['pct_target'] = pd.Series(0, index = df.index).mask((df['high_pct'] > target_up) & (df['open'].shift(1) <= df['high']) & (df['open'].shift(1) >= df['low']), target_up - df['close_pct'])
+        df['target']     = pd.Series(0, index = df.index).mask((df['high_pct'] > target_up) & (df['open'].shift(1) <= df['high']) & (df['open'].shift(1) >= df['low']), df['open'].shift(1) * (1+target_up) - df['close'])
 
         entry_criteria = f'+{round(target_up*100, 2)}% last OPEN candle'
         exit_criteria = 'closed candle'
@@ -88,7 +88,7 @@ class QuantStrategies:
 
         # Set target column to trade result if a condition is met then
         df['pct_target'] = pd.Series(0, index = df.index).mask(df['low_pct'] < target_down, df['close_pct'] - target_down)
-        df['target']     = pd.Series(0, index = df.index).mask(df['low_pct'] < target_down, df['close'] - df['close'].shift(1) * (1+target_down))
+        df['target']     = pd.Series(0, index = df.index).mask(df['low_pct'] < target_down, df['close'] - df['open'] * (1+target_down))
 
         entry_criteria = f'{round(target_down*100, 2)}% current OPEN candle'
         exit_criteria = 'closed candle'
@@ -107,7 +107,7 @@ class QuantStrategies:
 
         # Set target column to trade result if a condition is met then
         df['pct_target'] = pd.Series(0, index = df.index).mask(df['high_pct'] > target_up, target_up - df['close_pct'])
-        df['target']     = pd.Series(0, index = df.index).mask(df['high_pct'] > target_up, df['close'].shift(1) * (1+target_up) - df['close'])
+        df['target']     = pd.Series(0, index = df.index).mask(df['high_pct'] > target_up, df['open'] * (1+target_up) - df['close'])
 
         entry_criteria = f'+{round(target_up*100, 2)}% current OPEN candle'
         exit_criteria = 'closed candle'
@@ -245,7 +245,7 @@ class LoopSTrategies:
         for symbol in symbols:
             for tf in tfs:
 
-                df = datahandling.compile_data(df_csv_path, symbol, tf, cac_pct_current_open = True)
+                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_current_open = True)
 
                 for date in dates:
                     for pct_down in pct_down_range:
@@ -264,7 +264,7 @@ class LoopSTrategies:
         for symbol in symbols:
             for tf in tfs:
 
-                df = datahandling.compile_data(df_csv_path, symbol, tf, cac_pct_current_open = True)
+                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_current_open = True)
 
                 for date in dates:
                     for pct_up in pct_up_range:

@@ -53,11 +53,13 @@ def save_analysis_results(df, csv_file_path):
 def read_analysis_csv_data(csv_file_path, last_analysis_No):
 
     files_list = [item for item in os.listdir(csv_file_path) if not item.startswith('.')]
-    file = files_list[last_analysis_No-1]
+    files_list.sort()
+    file = files_list[-last_analysis_No]
     df = pd.read_csv(f'{csv_file_path}/{file}')
 
     print()
     print('=========================================')
+    print(f'{file}')
     print(df.to_string())
     print(f'No. of strategies: {len(df)}')
     print('=========================================')
