@@ -65,21 +65,3 @@ def read_analysis_csv_data(csv_file_path, last_analysis_No):
     print('=========================================')
 
     return df
-
-
-# ========== TO UPDATE BELOW ==============
-def read_data(symbol, tf):
-
-    # Read the .csv file saved from compile_data
-    df = pd.read_csv(f'/Volumes/PiNAS/market/1_Statistic_Method/Statistic Data/{symbol}_{tf}.csv')
-
-    # Adjust the time column to Pandas datetime and set it as index of the df
-    df['time'] = pd.to_datetime(df['time'])
-    df.set_index('time', inplace=True)
-
-    print(f'{symbol}_{tf}')
-
-    # Return the dataframe
-    return df
-
-

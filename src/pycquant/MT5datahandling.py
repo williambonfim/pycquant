@@ -21,7 +21,7 @@ class datahandling:
             for symbol in all_symbols: print(symbol)
             print()
 
-        with open(f"{path_to_save_csv}.csv", 'w') as f:
+        with open(f"{path_to_save_csv}", 'w') as f:
             writer = csv.writer(f)
             writer.writerow(all_symbols)
             f.close()
@@ -72,4 +72,49 @@ class datahandling:
         print()
             
         MT5.shutdown()
+
+    def save_minimum_trading_parameters(symbol, initialize=True, print_symbol_info=False):
+        
+        if initialize: MT5.initialize()
+        
+        symbol_info = mt5.symbol_info(symbol)
+        if print_symbol_info: print(symbol_info)
+
+        min_volume = symbol_info.volume_min
+        price = MT5.get_rates(symbol, number_of_candles = 1).iloc[0, 3]
+        point = symbol_info.point
+        min_margin = mt5.order_calc_margin(mt5.ORDER_TYPE_BUY, symbol, min_volume, price)
+
+        profit_per_10000points = mt5.order_calc_profit(mt5.ORDER_TYPE_BUY, symbol, min_volume, price, price + point*10000)
+
+        trading_parameters = [[ symbol, \
+                                min_volume, \
+                                min_margin, \
+                                point, \
+                                profit_per_10000points ]]
+
+        return trading_parameters
+
+    def save_multiple_minimum_trading_parameters(symbols, csv_file_path):
+        
+        MT5.initialize()
+
+        import pandas as pd
+        df = pd.DataFrame(columns = ['symbol', 'min_volume', 'min_margin', 'point', 'profit_per_10000points'])
+
+        i=0
+        t = len(symbols)
+        for symbol in symbols:
+            i = i+1
+            print_progress_bar(i, t, f'Saving {i}/{t} symbols...')
+            trading_parameters = datahandling.save_minimum_trading_parameters(symbol, initialize=False)
+            df = pd.concat([df, pd.DataFrame(trading_parameters, columns=df.columns)])
+        
+        print_progress_bar(1, 1, f'Symbols remaining: 0')
+        df = df.sort_values(by='symbol')
+        df = df.reset_index()
+        df.to_csv(f'{csv_file_path}/minimum_trading_parameters.csv')
+
+        return df
+
 

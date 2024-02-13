@@ -14,7 +14,7 @@ df_csv_path         = '/Volumes/NASpi/data/MT5/candle_data'
 analysis_data_csv   = '/Volumes/NASpi/data/MT5/analysis_data'
 # Select symbol you want to do the analysis
 symbols = ['Ger40', 'HKInd', 'Usa500', 'UsaTec', 'UsaInd', 'UsaRus', 'Bra50', 'Jp225', 'Aus200']
-
+symbols = ['Ger40']
 # Select the timeframe of the data to do the analysis
 tfs = ['D1']
 
