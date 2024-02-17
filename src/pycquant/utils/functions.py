@@ -28,12 +28,19 @@ def init_strategy_results_df():
     
     return df
 
-def get_last_x_trades(df, No_Trades=5):
+def get_last_x_trades(df, No_Trades=5, profit_per_price_unit=0, profits=False):
 
     index_list = df[df['pct_target'] != 0].index.tolist()[-No_Trades:]
+  
+    if profits:
 
-    last_x_trades = df.loc[index_list, ['pct_target']]
-    last_x_trades = [1 if target > 0 else (-1 if target <0 else 'X') for target in last_x_trades['pct_target']]    
+        last_x_trades = df.loc[index_list, ['target']]
+        last_x_trades = [(round(x*profit_per_price_unit, 2)) for x in last_x_trades['target']]
+
+    else:
+        
+        last_x_trades = df.loc[index_list, ['pct_target']]
+        last_x_trades = [1 if target > 0 else (-1 if target <0 else 'X') for target in last_x_trades['pct_target']]  
 
     return last_x_trades
 
@@ -45,10 +52,8 @@ def drop_data_before_initial_date(df, date):
     return df
 
 
-def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_trades=5):
+def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_trades=5, df_min_margin_volume=pd.DataFrame()):
    
-    #if use_pct_target == True:
-
     # Total No of candles analysed
     Total_No_candles = df.shape[0]
     # Count the number of profit trades
@@ -89,7 +94,6 @@ def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_
         average_result = system_result / total_No_trades
     
     last_x_trades = get_last_x_trades(df, No_Trades = no_trades)
-
 
     # Create a list with the data and the column header
     data = [[   symbol, \
@@ -135,6 +139,25 @@ def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_
     index_drop = df_results[(df_results['Max_%_tp'] > max_allowed_sl) & (df_results['%_tp'] <= (1-success_rate))].index
     df_results.drop(index_drop, inplace=True)
 
+    if not df_min_margin_volume.empty and not df_results.empty:
+
+        df_min_margin_volume = df_min_margin_volume.loc[[symbol],:]
+
+        min_margin = df_min_margin_volume.loc[symbol, 'min_margin']
+        min_volume = df_min_margin_volume.loc[symbol, 'min_volume']
+        point = df_min_margin_volume.loc[symbol, 'point']
+        profit_per_10000points = df_min_margin_volume.loc[symbol, 'profit_per_10000points']
+
+        profit_per_price_unit = profit_per_10000points / 10000 / point
+
+        df_results['min_volume'] = min_volume
+        df_results['min_margin'] = min_margin
+        df_results['£_Max_tp'] = round(profit_per_price_unit * df_results.loc[0, 'Max_tp'], 2)
+        df_results['£_Max_sl'] = round(profit_per_price_unit * df_results.loc[0, 'Max_sl'], 2)
+        df_results['£_Average_result'] = round(profit_per_price_unit * df_results.loc[0, 'Average_result'], 2)
+        df_results['£_System_result'] = round(profit_per_price_unit * df_results.loc[0, 'System_result'], 2)
+        last_x_trades = [get_last_x_trades(df, No_Trades = no_trades, profit_per_price_unit=profit_per_price_unit, profits=True)]
+        df_results['£_last_x_trades'] = last_x_trades
 
     return df_results
 

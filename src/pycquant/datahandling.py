@@ -9,8 +9,12 @@ def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct_last_close=False
     df = pd.read_csv('{}/{}_{}.csv'.format(csv_original_path, tf, symbol))
     
     # Adjust time column to Pandas datetime and set it as index of the df
-    df['time'] = pd.to_datetime(df['time'])
-    df.set_index('time', inplace=True)
+    if tf == 'D1':
+        pd.to_datetime(df['time'], format='mixed', dayfirst=True)
+        df.set_index('time', inplace=True)
+    else:
+        df['time'] = pd.to_datetime(df['time'])
+        df.set_index('time', inplace=True)
 
     # Drop columns that will not be used
     df.drop(['spread', 'real_volume', 'tick_volume'], axis=1, inplace=True)
@@ -44,11 +48,11 @@ def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct_last_close=False
     # Return the dataframe
     return df
 
-def save_analysis_results(df, csv_file_path):
+def save_analysis_results(df, csv_file_path) -> None:
     
     current_dt = dt.datetime.now()
     file_name = csv_file_path + f'/analysis_{current_dt}.csv'
-    df.to_csv(file_name)
+    df.to_csv(file_name, index=False)
 
 def read_analysis_csv_data(csv_file_path, last_analysis_No):
 
@@ -65,3 +69,11 @@ def read_analysis_csv_data(csv_file_path, last_analysis_No):
     print('=========================================')
 
     return df
+
+def read_minimum_trading_parameters(csv_file_path):
+
+    df = pd.read_csv(csv_file_path, index_col=0)
+
+    return df
+
+

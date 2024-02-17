@@ -2,6 +2,8 @@ import MetaTrader5 as mt5
 from MT5utils import MT5
 from utils import print_progress_bar
 import csv
+import os
+import pandas as pd
 
 
 class datahandling: 
@@ -51,29 +53,56 @@ class datahandling:
         }
 
         tf_mt5 = dict[tf]
+        file_name = f'{csv_file_path}{tf}_{symbol}.csv'
+        file_path = os.path.join(csv_file_path, file_name)
 
-        rates = MT5.get_rates(symbol, number_of_candles, tf_mt5)
-        rates.to_csv(f'{csv_file_path}{tf}_{symbol}.csv')
+        if os.path.exists(file_path):
 
-    def save_multiple_candle_data_to_csv(symbols, tfs, csv_file_path, number_of_candles=150000):
+            df_existing = pd.read_csv(file_path, index_col=0)
+            last_index = df_existing.index[-1]
+            df_existing.drop(last_index, inplace=True)
+
+            last_index = df_existing.index[-1]
+
+            rates = MT5.get_rates(symbol, number_of_candles, tf_mt5)
+            date = pd.to_datetime(last_index)
+
+            rates = rates[~(rates.index <= date)]
+
+            df_existing = pd.concat([df_existing, rates])
+
+            df_existing.to_csv(file_name)
+
+            return 'Existing data updated.'
+
+
+        else:
+
+            rates = MT5.get_rates(symbol, number_of_candles, tf_mt5)
+            rates.to_csv(file_name)
+            print(f'New data added to {symbol}')
+
+            return 'New data added.'
+
+    def save_multiple_candle_data_to_csv(symbols, tfs, csv_file_path, number_of_candles=15000):
         
         MT5.initialize()
 
         t = len(symbols) * len(tfs)
         i=0
-
+        str_saved = ''
         for symbol in symbols:
             for tf in tfs:
                 i = i+1
-                print_progress_bar(i, t, f'Saving {i}/{t} symbols...')
-                datahandling.save_candle_data_to_csv(symbol, tf, csv_file_path, number_of_candles, initialize=False)
+                print_progress_bar(i, t, f'Saving {i}/{t} symbols... {symbol} {tf}: {str_saved}')
+                str_saved = datahandling.save_candle_data_to_csv(symbol, tf, csv_file_path, number_of_candles, initialize=False)
 
-        print_progress_bar(1, 1, f'Symbols remaining: 0')
+        print_progress_bar(1, 1, f'All symbols saved to csv.')
         print()
             
         MT5.shutdown()
 
-    def save_minimum_trading_parameters(symbol, initialize=True, print_symbol_info=False):
+    def get_minimum_trading_parameters(symbol, initialize=True, print_symbol_info=False):
         
         if initialize: MT5.initialize()
         
@@ -107,13 +136,18 @@ class datahandling:
         for symbol in symbols:
             i = i+1
             print_progress_bar(i, t, f'Saving {i}/{t} symbols...')
-            trading_parameters = datahandling.save_minimum_trading_parameters(symbol, initialize=False)
+            trading_parameters = datahandling.get_minimum_trading_parameters(symbol, initialize=False)
             df = pd.concat([df, pd.DataFrame(trading_parameters, columns=df.columns)])
         
         print_progress_bar(1, 1, f'Symbols remaining: 0')
         df = df.sort_values(by='symbol')
         df = df.reset_index()
-        df.to_csv(f'{csv_file_path}/minimum_trading_parameters.csv')
+        df = df.drop('index', axis=1)
+        df.to_csv(f'{csv_file_path}/minimum_trading_parameters.csv', index=False)
+        print()
+        print()
+        print(f'All trading parameters saved. {csv_file_path}')
+        print()
 
         return df
 
