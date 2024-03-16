@@ -3,6 +3,17 @@ from utils import init_strategy_results_df
 import datetime as dt
 import os
 
+
+def update_D1_data(csv_original_path, symbols) -> None:
+    tf = 'D1'
+    for symbol in symbols:
+        print(symbol)
+        df = pd.read_csv('{}/{}_{}.csv'.format(csv_original_path, tf, symbol))
+        df['time'] = pd.to_datetime(df['time'], format='mixed')
+        df['time'] = df['time'].dt.strftime('%Y-%m-%d')
+        df.set_index('time', inplace=True)
+        df.to_csv(f'{csv_original_path}/{tf}_{symbol}.csv')
+
 def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct_last_close=False, calc_pct_last_open=False, calc_pct_current_open=False, save_to_csv_path = ''):
 
     # Read .csv file from a local path based on the ticker name and timeframe name
@@ -10,7 +21,8 @@ def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct_last_close=False
     
     # Adjust time column to Pandas datetime and set it as index of the df
     if tf == 'D1':
-        pd.to_datetime(df['time'], format='mixed', dayfirst=True)
+        #pd.to_datetime(df['time'], format='mixed', dayfirst=True)
+        df['time'] = pd.to_datetime(df['time'])
         df.set_index('time', inplace=True)
     else:
         df['time'] = pd.to_datetime(df['time'])

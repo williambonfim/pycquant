@@ -1,4 +1,7 @@
-from pycquant import LoopSTrategies
+from secret.local_settings import pycquant_path, df_csv_path, analysis_data_csv, all_symbols_path
+import sys
+sys.path.insert(0, pycquant_path)
+from pycquant import LoopStrategies
 import datahandling
 import datetime as dt
 import pandas as pd
@@ -10,11 +13,9 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 # --- Input parameters ---
 
 # -- General parameters
-df_csv_path         = '/Volumes/NASpi/data/MT5/candle_data'
-analysis_data_csv   = '/Volumes/NASpi/data/MT5/analysis_data'
 
 # Select symbol you want to do the analysis
-all_symbols_path    = '/Volumes/NASpi/data/MT5/symbol_data/activtrades_symbols.csv'
+
 with open(all_symbols_path, newline='') as f:
     reader = csv.reader(f)
     symbols = list(reader)
@@ -39,24 +40,25 @@ times = [f"{hour:02d}:{minute:02d}" for hour in range(24) for minute in range(0,
 pct_range = [x / 10000 for x in range(0, 501, 1)]
 candles_shifts = range(50)
 
+datahandling.update_D1_data(df_csv_path, symbols)
 
 initial_time = dt.datetime.now()
 # ------
 # --- Individual strategy check ---
 strategies = datahandling.init_strategy_results_df()
 
-strategy1 = LoopSTrategies.pct_down_last_close_close(df_csv_path, dates, symbols, tfs, [-x for x in pct_range], min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False)
+strategy1 = LoopStrategies.pct_down_last_close_close(df_csv_path, dates, symbols, tfs, [-x for x in pct_range], min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False)
 strategies = pd.concat([strategies, strategy1])
 
-strategy2 = LoopSTrategies.pct_up_last_close_close(df_csv_path, dates, symbols, tfs, pct_range, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False)
+strategy2 = LoopStrategies.pct_up_last_close_close(df_csv_path, dates, symbols, tfs, pct_range, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False)
 strategies = pd.concat([strategies, strategy2])
 
 tfs = ['M5']
 
-strategy3 = LoopSTrategies.open_at_time_close(df_csv_path, dates, symbols, tfs, times, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False)
+strategy3 = LoopStrategies.open_at_time_close(df_csv_path, dates, symbols, tfs, times, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False)
 strategies = pd.concat([strategies, strategy3])
 
-strategy4 = LoopSTrategies.open_at_time_shift_close(df_csv_path, dates, symbols, tfs, times, candles_shifts, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False)
+strategy4 = LoopStrategies.open_at_time_shift_close(df_csv_path, dates, symbols, tfs, times, candles_shifts, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False)
 strategies = pd.concat([strategies, strategy4])
 
 # ------

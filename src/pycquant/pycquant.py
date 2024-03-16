@@ -161,7 +161,7 @@ class QuantStrategies:
 
         return df_results
     
-class LoopSTrategies:
+class LoopStrategies:
 
     def pct_down_last_close_close(df_csv_path, dates, symbols, tfs, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
