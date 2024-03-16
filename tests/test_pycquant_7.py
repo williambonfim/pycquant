@@ -21,7 +21,7 @@ symbols = ['Ger40', 'HKInd', 'Usa500', 'UsaTec', 'UsaInd', 'UsaRus', 'Bra50', 'J
 tfs = ['M5']
 
 # Select the initial date from where the analysis will start
-dates = [dt.date(2023,11,1), dt.date(2023,1,1), dt.date(2024,1,15), dt.date(2024,2,1), dt.date(2024,2,14)]
+dates = [dt.date(2023,11,1), dt.date(2023,1,1), dt.date(2024,1,15), dt.date(2024,2,1), dt.date(2024,2,14), dt.date(2024,3,1)]
 
 # -- Trade system minimum requirements
 min_No_trade    = 15
