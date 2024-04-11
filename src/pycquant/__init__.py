@@ -5,3 +5,4 @@ __version__ = version("pycquant")
 from pycquant import QuantStrategies
 from pycquant import LoopStrategies
 from datahandling import *
+from pycquant import MP_LoopStrategies
