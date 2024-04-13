@@ -53,6 +53,8 @@ def drop_data_before_initial_date(df, date):
 
 
 def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_trades=5, df_min_margin_volume=pd.DataFrame()):
+
+    df_results = init_strategy_results_df()
    
     # Total No of candles analysed
     Total_No_candles = df.shape[0]
@@ -61,6 +63,9 @@ def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_
 
     # Count the total number of trades
     total_No_trades = df.astype(bool).sum(axis=0)['pct_target']
+
+    if total_No_trades < min_No_trade:
+        return df_results
 
     # Count the number of loser trades
     count_sl = total_No_trades - count_tp
@@ -73,6 +78,9 @@ def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_
         pct_tp = count_tp/total_No_trades
         pct_sl = count_sl/total_No_trades
 
+    if (pct_tp > (round(1-success_rate,4)) and pct_tp < success_rate):
+        return df_results    
+
     # Calculate total system result in the time period
     pct_system_result = df.sum()['pct_target']
     system_result = df.sum()['target']
@@ -83,6 +91,13 @@ def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_
 
     # Calculate maximum loss trade
     pct_max_sl = df.min()['pct_target']
+
+    if (pct_max_sl < -max_allowed_sl and pct_tp >= success_rate):
+        return df_results
+    
+    if (pct_max_sl > max_allowed_sl and pct_tp <= success_rate):
+        return df_results
+
     max_sl = df.min()['target']
 
     # Calculate average result in the time period
@@ -116,28 +131,25 @@ def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_
                 system_result, \
                 pct_system_result, \
                 last_x_trades   ]]
-
     
-    
-    df_results = init_strategy_results_df()
     data = pd.DataFrame(data, columns=df_results.columns)
     data = data.dropna(axis=1, how='all')
 
     df_results = pd.concat([df_results, data])
     
     # Drop results with less trades than minimum amount
-    df_results.drop(df_results.index[df_results['No_Trades'] < min_No_trade], inplace=True)
+    #df_results.drop(df_results.index[df_results['No_Trades'] < min_No_trade], inplace=True)
 
     # Drop results with success_rate between minimum success_rate
-    index_drop = df_results[(df_results['%_tp'] > (round(1-success_rate,4))) & (df_results['%_tp'] < success_rate)].index
-    df_results.drop(index_drop, inplace=True)
+    #index_drop = df_results[(df_results['%_tp'] > (round(1-success_rate,4))) & (df_results['%_tp'] < success_rate)].index
+    #df_results.drop(index_drop, inplace=True)
 
     # Drop results with sl above the maximum allowed
-    index_drop = df_results[(df_results['Max_%_sl'] < -max_allowed_sl) & (df_results['%_tp'] >= success_rate)].index
-    df_results.drop(index_drop, inplace=True)
+    #index_drop = df_results[(df_results['Max_%_sl'] < -max_allowed_sl) & (df_results['%_tp'] >= success_rate)].index
+    #df_results.drop(index_drop, inplace=True)
 
-    index_drop = df_results[(df_results['Max_%_tp'] > max_allowed_sl) & (df_results['%_tp'] <= (1-success_rate))].index
-    df_results.drop(index_drop, inplace=True)
+    #index_drop = df_results[(df_results['Max_%_tp'] > max_allowed_sl) & (df_results['%_tp'] <= (1-success_rate))].index
+    #df_results.drop(index_drop, inplace=True)
 
     if not df_min_margin_volume.empty and not df_results.empty:
 
