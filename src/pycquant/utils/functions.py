@@ -119,17 +119,17 @@ def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_
                 Total_No_candles, \
                 total_No_trades, \
                 count_tp, \
-                pct_tp, \
+                round(pct_tp, 4), \
                 count_sl, \
-                pct_sl, \
-                max_tp, \
-                pct_max_tp, \
-                max_sl, \
-                pct_max_sl, \
-                average_result, \
-                pct_average_result, \
-                system_result, \
-                pct_system_result, \
+                round(pct_sl, 4), \
+                round(max_tp, 2), \
+                round(pct_max_tp, 4), \
+                round(max_sl, 2), \
+                round(pct_max_sl, 4), \
+                round(average_result, 2), \
+                round(pct_average_result, 4), \
+                round(system_result, 2), \
+                round(pct_system_result, 4), \
                 last_x_trades   ]]
     
     data = pd.DataFrame(data, columns=df_results.columns)
