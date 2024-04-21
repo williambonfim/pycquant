@@ -11,6 +11,7 @@ import datetime as dt
 # ===============================================================================================
 class MT5:
 
+    @staticmethod
     def initialize() -> None:
         # establish connection to the MetaTrader 5 terminal 
         mt5.initialize()
@@ -33,6 +34,7 @@ class MT5:
         print(f'SERVER: {account_info.server}')
         print('====================================')
 
+    @staticmethod
     def shutdown() -> None:
         mt5.shutdown()
         print('====================================')
@@ -40,6 +42,7 @@ class MT5:
         print('====================================')
 
     # Function to get rates given the Symbol, No. Candles and Timeframe
+    @staticmethod
     def get_rates(symbol, number_of_candles = 100, timeframe = mt5.TIMEFRAME_M1):
         from_date = dt.datetime.now()
         rates = mt5.copy_rates_from(symbol, timeframe, from_date, number_of_candles)
@@ -49,6 +52,7 @@ class MT5:
         #print(df_rates.tail())
         return df_rates
 
+    @staticmethod
     def find_filling_mode(symbol, deviation):
         for i in range(2):
             request = {
@@ -71,6 +75,7 @@ class MT5:
 
         return i
 
+    @staticmethod
     def check_buy_market_order(symbol, lot, sl, tp, deviation=10, comment='python script'):
         point = mt5.symbol_info(symbol).point
 
@@ -93,6 +98,7 @@ class MT5:
         reply = check.comment
         return reply, check
 
+    @staticmethod
     def buy_market_order(symbol, lot, sl, tp, deviation=10, comment='python script', magic=0):
         point = mt5.symbol_info(symbol).point
         filling_type = MT5.find_filling_mode(symbol, deviation)
@@ -116,6 +122,7 @@ class MT5:
         
         return order
 
+    @staticmethod
     def buy_market_order_sl(symbol, lot, sl, deviation=10, comment='python script', magic=0):
         point = mt5.symbol_info(symbol).point
         filling_type = MT5.find_filling_mode(symbol, deviation)
@@ -138,6 +145,7 @@ class MT5:
         
         return order
 
+    @staticmethod
     def buy_market(symbol, lot, deviation=10, comment='python script', magic=0):
 
         filling_type = MT5.find_filling_mode(symbol, deviation)
@@ -159,6 +167,7 @@ class MT5:
         
         return order
     
+    @staticmethod
     def check_buy_market(symbol, lot, deviation=10, comment='python script', magic=0):
 
         filling_type = MT5.find_filling_mode(symbol, deviation)
@@ -180,6 +189,7 @@ class MT5:
         
         return order
     
+    @staticmethod
     def buy_pending(symbol, lot, price, deviation=10, comment='python script', magic=0):
 
         filling_type = MT5.find_filling_mode(symbol, deviation)
@@ -206,6 +216,7 @@ class MT5:
         
         return order
     
+    @staticmethod
     def check_buy_pending(symbol, lot, price, deviation=10, comment='python script'):
 
         filling_type = MT5.find_filling_mode(symbol, deviation)
@@ -231,6 +242,7 @@ class MT5:
         
         return order
 
+    @staticmethod
     def close_open_buy(order, deviation = 10):
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
@@ -247,6 +259,7 @@ class MT5:
         close_order = mt5.order_send(request)
         return close_order
 
+    @staticmethod
     def check_sell_market_order(symbol, lot, sl, tp, deviation=10, comment='python script'):
         point = mt5.symbol_info(symbol).point
 
@@ -269,6 +282,7 @@ class MT5:
         reply = check.comment
         return reply, check
 
+    @staticmethod
     def sell_market_order(symbol, lot, sl, tp, deviation=10, comment='python script', magic=0):
         
         point = mt5.symbol_info(symbol).point
@@ -293,6 +307,7 @@ class MT5:
         
         return order
     
+    @staticmethod
     def sell_market_order_sl(symbol, lot, sl, deviation=10, comment='python script', magic=0):
         
         point = mt5.symbol_info(symbol).point
@@ -316,6 +331,7 @@ class MT5:
         
         return order
 
+    @staticmethod
     def sell_market(symbol, lot, deviation=10, comment='python script', magic=0):
 
         filling_type = MT5.find_filling_mode(symbol, deviation)
@@ -337,6 +353,7 @@ class MT5:
 
         return order
     
+    @staticmethod
     def check_sell_market(symbol, lot, deviation=10, comment='python script', magic=0):
 
         filling_type = MT5.find_filling_mode(symbol, deviation)
@@ -358,6 +375,7 @@ class MT5:
 
         return order
     
+    @staticmethod
     def sell_pending(symbol, lot, price, deviation=10, comment='python script', magic=0):
 
         filling_type = MT5.find_filling_mode(symbol, deviation)
@@ -384,6 +402,7 @@ class MT5:
         
         return order
     
+    @staticmethod
     def check_sell_pending(symbol, lot, price, deviation=10, comment='python script'):
 
         filling_type = MT5.find_filling_mode(symbol, deviation)
@@ -409,6 +428,7 @@ class MT5:
         
         return order    
 
+    @staticmethod
     def close_open_sell(order, deviation = 10):
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
@@ -425,6 +445,7 @@ class MT5:
         close_order = mt5.order_send(request)
         return close_order
 
+    @staticmethod
     def close_by(open_order, order_close_by):
         request = {
             "action": mt5.TRADE_ACTION_CLOSE_BY,
@@ -437,6 +458,7 @@ class MT5:
         close_by_order = mt5.order_send(request)
         return close_by_order
 
+    @staticmethod
     def change_sl(order, new_sl) -> None:
         point = mt5.symbol_info(order.request.symbol).point
 
@@ -449,6 +471,7 @@ class MT5:
             "type_time": mt5.ORDER_TIME_GTC
         }
 
+    @staticmethod
     def check_orders(symbol):
 
         orders = mt5.orders_get(symbol = symbol) 
@@ -461,6 +484,7 @@ class MT5:
                 print(order)
             return len(orders), orders
 
+    @staticmethod
     def check_positions(symbol):
 
         positions = mt5.positions_get(symbol = symbol) 
@@ -473,6 +497,7 @@ class MT5:
                 print(order)
             return len(positions), positions
 
+    @staticmethod
     def delta_from_open(symbol, timeframe = mt5.TIMEFRAME_M15):
 
         open = MT5.get_rates(symbol, number_of_candles = 1, timeframe = timeframe)['open'].iat[-1]
@@ -483,11 +508,13 @@ class MT5:
         
         return delta_open_point
 
+    @staticmethod
     def check_time_shutdown(time_close_all) -> None:
         if time_close_all <= dt.datetime.now().time().replace(microsecond=0):
             MT5.shutdown()
             quit()
 
+    @staticmethod
     def print_request(result):
 
         if result == None:

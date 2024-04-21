@@ -14,7 +14,7 @@ warnings.simplefilter(action='ignore', category=FutureWarning)
 MT5.initialize()
 
 checkorder = True
-'''
+
 # Startegies list
 strategies = []
 strategies.append(PctStrategies('Ger40', 'D1', 0.25, pct=1, last_close=True, check_order=checkorder))
@@ -27,11 +27,11 @@ strategies.append(PctStrategies('Ger40', 'D1', 0.25, pct=-1, buy=False, current_
 # Place orders
 for strategy in strategies:
     strategy.place_order()
-'''
+
 strategies = []
 
 h = 11
-m = 23
+m = 34
 s = 0
 
 entry = dt.time(h,m,s)

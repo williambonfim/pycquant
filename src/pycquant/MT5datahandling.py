@@ -8,6 +8,7 @@ import pandas as pd
 
 class datahandling: 
 
+    @staticmethod
     def save_all_symbols(path_to_save_csv, print_symbols=False):
 
         MT5.initialize()
@@ -34,6 +35,7 @@ class datahandling:
 
         return all_symbols
 
+    @staticmethod
     def save_candle_data_to_csv(symbol, tf, csv_file_path, number_of_candles=150000, initialize=True):
 
         if initialize: MT5.initialize()
@@ -84,6 +86,7 @@ class datahandling:
 
             return 'New data added.'
 
+    @staticmethod
     def save_multiple_candle_data_to_csv(symbols, tfs, csv_file_path, number_of_candles=15000):
         
         MT5.initialize()
@@ -102,6 +105,7 @@ class datahandling:
             
         MT5.shutdown()
 
+    @staticmethod
     def get_minimum_trading_parameters(symbol, initialize=True, print_symbol_info=False):
         
         if initialize: MT5.initialize()
@@ -124,6 +128,7 @@ class datahandling:
 
         return trading_parameters
 
+    @staticmethod
     def save_multiple_minimum_trading_parameters(symbols, csv_file_path):
         
         MT5.initialize()
