@@ -1,4 +1,4 @@
-from secret.local_settings import pycquant_path_1, symbols_file_path, candle_file_path, min_trading_parameters_path
+from secret.local_settings import pycquant_path_1, symbols_file_path, candle_file_path, min_trading_parameters_path_1
 import sys
 sys.path.insert(0, pycquant_path_1)
 
@@ -30,14 +30,14 @@ update_D1_data(candle_file_path, symbols)
 # =========================================================================================================
 # -------------------
 # Save minimum trading parameters for all symbols
-mt5.datahandling.save_multiple_minimum_trading_parameters(symbols, min_trading_parameters_path)
-
+mt5.datahandling.save_multiple_minimum_trading_parameters(symbols, min_trading_parameters_path_1)
+quit()
 symbols = ['Ger40', 'HKInd', 'Usa500', 'UsaTec', 'UsaInd', 'UsaRus', 'Bra50', 'Jp225', 'Aus200']
 tfs = ['M5']
-number_of_candles = 4500
+number_of_candles = 300 * 15
 mt5.datahandling.save_multiple_candle_data_to_csv(symbols, tfs, candle_file_path, number_of_candles)
 
 # =========================================================================================================
 # =========================================================================================================
 
-mt5.datahandling.save_candle_data_to_csv('Ger40', 'M5', candle_file_path, number_of_candles = 150000)
+#mt5.datahandling.save_candle_data_to_csv('Ger40', 'M5', candle_file_path, number_of_candles = 150000)

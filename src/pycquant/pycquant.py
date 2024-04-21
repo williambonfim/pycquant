@@ -7,6 +7,7 @@ from multiprocessing import Pool
 
 class QuantStrategies:
 
+    @staticmethod
     def pct_down_last_close_close(df, date_0, symbol, tf, target_down, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         # Get initial time and drop index before the initial date
@@ -26,6 +27,7 @@ class QuantStrategies:
 
         return df_results
 
+    @staticmethod
     def pct_up_last_close_close(df, date_0, symbol, tf, target_up, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         # Get initial time and drop index before the initial date
@@ -45,6 +47,7 @@ class QuantStrategies:
 
         return df_results
     
+    @staticmethod
     def pct_down_last_open_close(df, date_0, symbol, tf, target_down, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         # Get initial time and drop index before the initial date
@@ -64,6 +67,7 @@ class QuantStrategies:
 
         return df_results
 
+    @staticmethod
     def pct_up_last_open_close(df, date_0, symbol, tf, target_up, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         # Get initial time and drop index before the initial date
@@ -83,6 +87,7 @@ class QuantStrategies:
 
         return df_results
     
+    @staticmethod
     def pct_down_current_open_close(df, date_0, symbol, tf, target_down, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         # Get initial time and drop index before the initial date
@@ -102,6 +107,7 @@ class QuantStrategies:
 
         return df_results
 
+    @staticmethod
     def pct_up_current_open_close(df, date_0, symbol, tf, target_up, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         # Get initial time and drop index before the initial date
@@ -121,6 +127,7 @@ class QuantStrategies:
 
         return df_results
 
+    @staticmethod
     def open_at_time_close(df, date_0, symbol, tf, time, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
         
         # Get initial time and drop index before the initial date
@@ -142,6 +149,7 @@ class QuantStrategies:
 
         return df_results
 
+    @staticmethod
     def open_at_time_shift_close(df, date_0, symbol, tf, time, candles_shift, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
         # Get initial time and drop index before the initial date
         df = drop_data_before_initial_date(df, date_0)
@@ -165,6 +173,7 @@ class QuantStrategies:
     
 class LoopStrategies:
 
+    @staticmethod
     def pct_down_last_close_close(df_csv_path, dates, symbols, tfs, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -184,6 +193,7 @@ class LoopStrategies:
 
         return df_results
 
+    @staticmethod
     def pct_up_last_close_close(df_csv_path, dates, symbols, tfs, pct_up_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -203,6 +213,7 @@ class LoopStrategies:
 
         return df_results
     
+    @staticmethod
     def pct_down_last_open_close(df_csv_path, dates, symbols, tfs, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -222,6 +233,7 @@ class LoopStrategies:
 
         return df_results
 
+    @staticmethod
     def pct_up_last_open_close(df_csv_path, dates, symbols, tfs, pct_up_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -241,6 +253,7 @@ class LoopStrategies:
 
         return df_results
     
+    @staticmethod
     def pct_down_current_open_close(df_csv_path, dates, symbols, tfs, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -260,6 +273,7 @@ class LoopStrategies:
 
         return df_results
 
+    @staticmethod
     def pct_up_current_open_close(df_csv_path, dates, symbols, tfs, pct_up_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -279,6 +293,7 @@ class LoopStrategies:
 
         return df_results
 
+    @staticmethod
     def open_at_time_close(df_csv_path, dates, symbols, tfs, times, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -298,6 +313,7 @@ class LoopStrategies:
 
         return df_results
     
+    @staticmethod
     def open_at_time_shift_close(df_csv_path, dates, symbols, tfs, times, candles_shifts, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -321,12 +337,14 @@ class LoopStrategies:
     
 class Workers:
 
+    @staticmethod
     def worker_1(task):
         df, date, symbol, tf, time, candles_shift, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume = task
         
         result = QuantStrategies.open_at_time_shift_close(df, date, symbol, tf, time, candles_shift, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume)
         return result
 
+    @staticmethod
     def worker_2(task):
         df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume = task
 
@@ -334,6 +352,7 @@ class Workers:
 
         return result
     
+    @staticmethod
     def worker_3(task):
         df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume = task
 
@@ -341,6 +360,7 @@ class Workers:
 
         return result
 
+    @staticmethod
     def worker_4(task):
         df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume = task
 
@@ -348,6 +368,7 @@ class Workers:
 
         return result
     
+    @staticmethod
     def worker_5(task):
         df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume = task
 
@@ -355,6 +376,7 @@ class Workers:
 
         return result
     
+    @staticmethod
     def worker_6(task):
         df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume = task
 
@@ -362,6 +384,7 @@ class Workers:
 
         return result
     
+    @staticmethod
     def worker_7(task):
         df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume = task
 
@@ -369,6 +392,7 @@ class Workers:
 
         return result
     
+    @staticmethod
     def worker_8(task):
         df, date, symbol, tf, time, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume = task
         
@@ -377,6 +401,7 @@ class Workers:
 
 class MP_LoopStrategies:
 
+    @staticmethod
     def open_at_time_shift_close(df_csv_path, dates, symbols, tfs, times, candles_shifts, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -397,6 +422,7 @@ class MP_LoopStrategies:
                 
         return df_results
     
+    @staticmethod
     def pct_down_last_close_close(df_csv_path, dates, symbols, tfs, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -417,6 +443,7 @@ class MP_LoopStrategies:
         
         return df_results
     
+    @staticmethod
     def pct_up_last_close_close(df_csv_path, dates, symbols, tfs, pct_up_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -437,6 +464,7 @@ class MP_LoopStrategies:
         
         return df_results
 
+    @staticmethod
     def pct_down_last_open_close(df_csv_path, dates, symbols, tfs, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -457,6 +485,7 @@ class MP_LoopStrategies:
         
         return df_results
 
+    @staticmethod
     def pct_up_last_open_close(df_csv_path, dates, symbols, tfs, pct_up_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -477,6 +506,7 @@ class MP_LoopStrategies:
         
         return df_results
 
+    @staticmethod
     def pct_down_current_open_close(df_csv_path, dates, symbols, tfs, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -497,6 +527,7 @@ class MP_LoopStrategies:
         
         return df_results
 
+    @staticmethod
     def pct_up_current_open_close(df_csv_path, dates, symbols, tfs, pct_up_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
@@ -517,6 +548,7 @@ class MP_LoopStrategies:
         
         return df_results
 
+    @staticmethod
     def open_at_time_close(df_csv_path, dates, symbols, tfs, times, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()

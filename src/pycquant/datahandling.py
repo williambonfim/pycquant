@@ -1,8 +1,7 @@
 import pandas as pd
-from utils import init_strategy_results_df
 import datetime as dt
 import os
-
+from utils import init_strategy_results_df
 
 def update_D1_data(csv_original_path, symbols) -> None:
     tf = 'D1'

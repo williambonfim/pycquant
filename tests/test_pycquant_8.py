@@ -27,13 +27,13 @@ if __name__ == "__main__":
     min_No_trade    = 15
     max_allowed_sl  = 0.02
     success_rate    = 0.80
-    no_last_trades  = 6
+    no_last_trades  = 10
 
     # -- Specific strategies input
     # Candle time to strategies time dependent
     times = [f"{hour:02d}:{minute:02d}" for hour in range(24) for minute in range(0, 60, 5)]
-    candles_shifts = range(96) #96
-
+    candles_shifts = range(24) #96
+ 
     df_parameters = datahandling.read_minimum_trading_parameters(min_trading_parameters_path)
     # =========================================================================================================
     # =========================================================================================================

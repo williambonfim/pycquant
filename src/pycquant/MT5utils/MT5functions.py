@@ -158,6 +158,78 @@ class MT5:
         order = mt5.order_send(request)
         
         return order
+    
+    def check_buy_market(symbol, lot, deviation=10, comment='python script', magic=0):
+
+        filling_type = MT5.find_filling_mode(symbol, deviation)
+
+        request = {
+            "action":       mt5.TRADE_ACTION_DEAL,
+            "symbol":       symbol,
+            "volume":       lot,
+            "type":         mt5.ORDER_TYPE_BUY,
+            "price":        mt5.symbol_info_tick(symbol).ask,
+            "deviation":    deviation,
+            "magic":        magic,
+            "comment":      comment,
+            "type_filling": filling_type,
+            "type_time":    mt5.ORDER_TIME_GTC
+        }
+        
+        order = mt5.order_check(request)
+        
+        return order
+    
+    def buy_pending(symbol, lot, price, deviation=10, comment='python script', magic=0):
+
+        filling_type = MT5.find_filling_mode(symbol, deviation)
+        current_price = mt5.symbol_info_tick(symbol).ask
+        if price < current_price:
+            order_type = mt5.ORDER_TYPE_BUY_LIMIT
+        else:
+            order_type = mt5.ORDER_TYPE_BUY_STOP
+
+        request = {
+            "action":       mt5.TRADE_ACTION_PENDING,
+            "symbol":       symbol,
+            "volume":       lot,
+            "type":         order_type,
+            "price":        price,
+            "deviation":    deviation,
+            "magic":        magic,
+            "comment":      comment,
+            "type_filling": filling_type,
+            "type_time":    mt5.ORDER_TIME_DAY
+        }
+        
+        order = mt5.order_send(request)
+        
+        return order
+    
+    def check_buy_pending(symbol, lot, price, deviation=10, comment='python script'):
+
+        filling_type = MT5.find_filling_mode(symbol, deviation)
+        current_price = mt5.symbol_info_tick(symbol).ask
+        if price < current_price:
+            order_type = mt5.ORDER_TYPE_BUY_LIMIT
+        else:
+            order_type = mt5.ORDER_TYPE_BUY_STOP
+
+        request = {
+            "action":       mt5.TRADE_ACTION_PENDING,
+            "symbol":       symbol,
+            "volume":       lot,
+            "type":         order_type,
+            "price":        price,
+            "deviation":    deviation,
+            "comment":      comment,
+            "type_filling": filling_type,
+            "type_time":    mt5.ORDER_TIME_DAY
+        }
+        
+        order = mt5.order_check(request)
+        
+        return order
 
     def close_open_buy(order, deviation = 10):
         request = {
@@ -264,6 +336,78 @@ class MT5:
         order = mt5.order_send(request)
 
         return order
+    
+    def check_sell_market(symbol, lot, deviation=10, comment='python script', magic=0):
+
+        filling_type = MT5.find_filling_mode(symbol, deviation)
+
+        request = {
+            "action":       mt5.TRADE_ACTION_DEAL,
+            "symbol":       symbol,
+            "volume":       lot,
+            "type":         mt5.ORDER_TYPE_SELL,
+            "price":        mt5.symbol_info_tick(symbol).bid,
+            "deviation":    deviation,
+            "magic":        magic,
+            "comment":      comment,
+            "type_filling": filling_type,
+            "type_time":    mt5.ORDER_TIME_GTC
+        }
+
+        order = mt5.order_check(request)
+
+        return order
+    
+    def sell_pending(symbol, lot, price, deviation=10, comment='python script', magic=0):
+
+        filling_type = MT5.find_filling_mode(symbol, deviation)
+        current_price = mt5.symbol_info_tick(symbol).ask
+        if price < current_price:
+            order_type = mt5.ORDER_TYPE_SELL_STOP
+        else:
+            order_type = mt5.ORDER_TYPE_SELL_LIMIT
+
+        request = {
+            "action":       mt5.TRADE_ACTION_PENDING,
+            "symbol":       symbol,
+            "volume":       lot,
+            "type":         order_type,
+            "price":        price,
+            "deviation":    deviation,
+            "magic":        magic,
+            "comment":      comment,
+            "type_filling": filling_type,
+            "type_time":    mt5.ORDER_TIME_DAY
+        }
+        
+        order = mt5.order_send(request)
+        
+        return order
+    
+    def check_sell_pending(symbol, lot, price, deviation=10, comment='python script'):
+
+        filling_type = MT5.find_filling_mode(symbol, deviation)
+        current_price = mt5.symbol_info_tick(symbol).ask
+        if price < current_price:
+            order_type = mt5.ORDER_TYPE_SELL_STOP
+        else:
+            order_type = mt5.ORDER_TYPE_SELL_LIMIT
+
+        request = {
+            "action":       mt5.TRADE_ACTION_PENDING,
+            "symbol":       symbol,
+            "volume":       lot,
+            "type":         order_type,
+            "price":        price,
+            "deviation":    deviation,
+            "comment":      comment,
+            "type_filling": filling_type,
+            "type_time":    mt5.ORDER_TIME_DAY
+        }
+        
+        order = mt5.order_check(request)
+        
+        return order    
 
     def close_open_sell(order, deviation = 10):
         request = {
@@ -271,7 +415,7 @@ class MT5:
             "symbol": order.request.symbol,
             "position": order.order,
             "volume": order.volume,
-            "type": mt5.ORDER_TYPE_BUY,
+            "type": mt5.ORDER_TYPE_SELL,
             "price": mt5.symbol_info_tick(order.request.symbol).ask,
             "deviation": deviation,
             "type_filling": order.request.type_filling,
@@ -343,3 +487,21 @@ class MT5:
         if time_close_all <= dt.datetime.now().time().replace(microsecond=0):
             MT5.shutdown()
             quit()
+
+    def print_request(result):
+
+        if result == None:
+            print('Error. Results has no values!')
+            return 0
+
+        # request the result as a dictionary and display it element by element
+        result_dict=result._asdict()
+
+        for field in result_dict.keys():
+            print("   {}={}".format(field,result_dict[field]))
+            # if this is a trading request structure, display it element by element as well
+
+            if field=="request":
+                traderequest_dict=result_dict[field]._asdict()
+                for tradereq_filed in traderequest_dict:
+                    print("       traderequest: {}={}".format(tradereq_filed,traderequest_dict[tradereq_filed]))

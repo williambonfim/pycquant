@@ -22,13 +22,13 @@ if __name__ == "__main__":
     #tfs = ['M5']
 
     # Select the initial date from where the analysis will start
-    dates = [dt.date(2023,1,1), dt.date(2023,11,1), dt.date(2024,1,1), dt.date(2024,2,1), dt.date(2024,3,1), dt.date(2024,4,1)]
+    #dates = [dt.date(2023,1,1), dt.date(2023,11,1), dt.date(2024,1,1)]
 
     # -- Trade system minimum requirements
     min_No_trade    = 15
     max_allowed_sl  = 0.02
     success_rate    = 0.80
-    no_last_trades  = 6
+    no_last_trades  = 10
 
     # -- Specific strategies input
     # Candle time to strategies time dependent
@@ -49,6 +49,8 @@ if __name__ == "__main__":
     strategies = datahandling.init_strategy_results_df()
 
     tfs=['D1']
+    dates = [dt.date(2023,1,1), dt.date(2023,11,1), dt.date(2024,1,1)]
+
     strategy1 = MP_LoopStrategies.pct_down_last_close_close(df_csv_path, dates, symbols, tfs, [-x for x in pct_range], min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
     strategies = pd.concat([strategies, strategy1])
     print(f'Strategy #1 analysis time: {dt.datetime.now()-initial_time}')
@@ -61,36 +63,31 @@ if __name__ == "__main__":
 
     strategy5 = MP_LoopStrategies.pct_down_last_open_close(df_csv_path, dates, symbols, tfs, [-x for x in pct_range], min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
     strategies = pd.concat([strategies, strategy5])
-    print(f'Strategy #5 analysis time: {dt.datetime.now()-initial_time}')
+    print(f'Strategy #3 analysis time: {dt.datetime.now()-initial_time}')
     print()
 
     strategy6 = MP_LoopStrategies.pct_up_last_open_close(df_csv_path, dates, symbols, tfs, pct_range, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
     strategies = pd.concat([strategies, strategy6])
-    print(f'Strategy #6 analysis time: {dt.datetime.now()-initial_time}')
+    print(f'Strategy #4 analysis time: {dt.datetime.now()-initial_time}')
     print()
 
     strategy7 = MP_LoopStrategies.pct_down_current_open_close(df_csv_path, dates, symbols, tfs, [-x for x in pct_range], min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
     strategies = pd.concat([strategies, strategy7])
-    print(f'Strategy #7 analysis time: {dt.datetime.now()-initial_time}')
+    print(f'Strategy #5 analysis time: {dt.datetime.now()-initial_time}')
     print()
 
     strategy8 = MP_LoopStrategies.pct_up_current_open_close(df_csv_path, dates, symbols, tfs, pct_range, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
     strategies = pd.concat([strategies, strategy8])
-    print(f'Strategy #8 analysis time: {dt.datetime.now()-initial_time}')
+    print(f'Strategy #6 analysis time: {dt.datetime.now()-initial_time}')
     print()
-
 
     tfs = ['M5']
     dates = [dt.date(2024,2,1), dt.date(2024,2,15), dt.date(2024,3,1), dt.date(2024,3,15), dt.date(2024,4,1)]
+    
     strategy3 = MP_LoopStrategies.open_at_time_close(df_csv_path, dates, symbols, tfs, times, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
     strategies = pd.concat([strategies, strategy3])
-    print(f'Strategy #3 analysis time: {dt.datetime.now()-initial_time}')
+    print(f'Strategy #7 analysis time: {dt.datetime.now()-initial_time}')
     print()
-
-    '''strategy4 = MP_LoopStrategies.open_at_time_shift_close(df_csv_path, dates, symbols, tfs, times, candles_shifts, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
-    strategies = pd.concat([strategies, strategy4])
-    print(f'Strategy #4 analysis time: {dt.datetime.now()-initial_time}')
-    '''
 
     # ------
 
