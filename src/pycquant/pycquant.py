@@ -23,7 +23,7 @@ class QuantStrategies:
         if print_df:
             print_symbol_df(df, symbol, tf, entry_criteria, exit_criteria)
 
-        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume)
+        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume, pct_strategy=True, pct = target_down, pct_down=True, last_close=True)
 
         return df_results
 
@@ -43,7 +43,7 @@ class QuantStrategies:
         if print_df:
             print_symbol_df(df, symbol, tf, entry_criteria, exit_criteria)
 
-        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume)
+        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume, pct_strategy=True, pct = target_up, pct_down=False, last_close=True)
 
         return df_results
     
@@ -63,7 +63,7 @@ class QuantStrategies:
         if print_df:
             print_symbol_df(df, symbol, tf, entry_criteria, exit_criteria)
 
-        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume)
+        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume, pct_strategy=True, pct = target_down, pct_down=True, last_open=True)
 
         return df_results
 
@@ -83,7 +83,7 @@ class QuantStrategies:
         if print_df:
             print_symbol_df(df, symbol, tf, entry_criteria, exit_criteria)
 
-        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume)
+        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume, pct_strategy=True, pct = target_up, pct_down=False, last_open=True)
 
         return df_results
     
@@ -103,7 +103,7 @@ class QuantStrategies:
         if print_df:
             print_symbol_df(df, symbol, tf, entry_criteria, exit_criteria)
 
-        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume)
+        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume, pct_strategy=True, pct = target_down, pct_down=True, current_open=True)
 
         return df_results
 
@@ -123,7 +123,7 @@ class QuantStrategies:
         if print_df:
             print_symbol_df(df, symbol, tf, entry_criteria, exit_criteria)
 
-        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume)
+        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume, pct_strategy=True, pct = target_up, pct_down=False, current_open=True)
 
         return df_results
 
@@ -145,7 +145,7 @@ class QuantStrategies:
         if print_df:
             print_symbol_df(df, symbol, tf, entry_criteria, exit_criteria)
 
-        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume)
+        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume, at_time_strategy=True, entry_time=time, candle_shift=0)
 
         return df_results
 
@@ -167,7 +167,7 @@ class QuantStrategies:
         if print_df:
             print_symbol_df(df, symbol, tf, entry_criteria, exit_criteria)
 
-        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume)
+        df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume, at_time_strategy=True, entry_time=time, candle_shift=candles_shift)
 
         return df_results
     

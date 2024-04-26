@@ -21,7 +21,7 @@ if __name__ == "__main__":
     # Select the timeframe of the data to do the analysis
     tfs = ['M5']
     # Select the initial date from where the analysis will start
-    dates = [dt.date(2024,2,14), dt.date(2024,3,1), dt.date(2024,3,15), dt.date(2024,4,1)]
+    dates = [dt.date(2024,2,14), dt.date(2024,3,1), dt.date(2024,3,15), dt.date(2024,4,1), dt.date(2024,4,14)]
 
     # -- Trade system minimum requirements
     min_No_trade    = 15
@@ -32,7 +32,7 @@ if __name__ == "__main__":
     # -- Specific strategies input
     # Candle time to strategies time dependent
     times = [f"{hour:02d}:{minute:02d}" for hour in range(24) for minute in range(0, 60, 5)]
-    candles_shifts = range(24) #96
+    candles_shifts = range(12) #8*12=96, 12 = 1 hour
  
     df_parameters = datahandling.read_minimum_trading_parameters(min_trading_parameters_path)
     # =========================================================================================================

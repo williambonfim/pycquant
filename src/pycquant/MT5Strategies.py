@@ -28,11 +28,11 @@ class PctStrategies:
     def comment_strategy(pct, last_close, last_open, current_open):
 
         if last_close:
-            return f'python script-PctStrat:LC{pct}%'
+            return f'python script-LC'
         if last_open:
-            return f'python script-PctStrat:LO{pct}%'
+            return f'python script-LO'
         if current_open:
-            return f'python script-PctStrat:CO{pct}%'
+            return f'python script-CO'
         else:
             return 'python script'
 
@@ -148,36 +148,36 @@ class OpenCloseAtTimeStrategies():
                     
                     if abc.check_order:
 
-                        abc.buy_order = MT5.check_buy_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
+                        abc.order = MT5.check_buy_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
                         abc.checker = 1
                         print()
-                        MT5.print_request(abc.buy_order)
+                        MT5.print_request(abc.order)
                         print()
                     
                     else:
 
-                        abc.buy_order = MT5.buy_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
+                        abc.order = MT5.buy_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
                         abc.checker = 1
                         print()
-                        MT5.print_request(abc.buy_order)
+                        MT5.print_request(abc.order)
                         print()
                 
                 else:
 
                     if abc.check_order:
 
-                        abc.sell_order = MT5.check_sell_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
+                        abc.order = MT5.check_sell_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
                         abc.checker = 1
                         print()
-                        MT5.print_request(abc.sell_order)
+                        MT5.print_request(abc.order)
                         print()
 
                     else:
 
-                        abc.sell_order = MT5.sell_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
+                        abc.order = MT5.sell_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
                         abc.checker = 1
                         print()
-                        MT5.print_request(abc.sell_order)
+                        MT5.print_request(abc.order)
                         print()
 
             else:

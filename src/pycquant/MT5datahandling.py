@@ -96,8 +96,8 @@ class datahandling:
         str_saved = ''
         for symbol in symbols:
             for tf in tfs:
-                i = i+1
                 print_progress_bar(i, t, f'Saving {i}/{t} symbols... {symbol} {tf}: {str_saved}')
+                i = i+1
                 str_saved = datahandling.save_candle_data_to_csv(symbol, tf, csv_file_path, number_of_candles, initialize=False)
 
         print_progress_bar(1, 1, f'All symbols saved to csv.')

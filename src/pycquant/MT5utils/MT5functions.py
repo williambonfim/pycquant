@@ -213,7 +213,7 @@ class MT5:
         }
         
         order = mt5.order_send(request)
-        
+        print(order)
         return order
     
     @staticmethod
@@ -435,7 +435,7 @@ class MT5:
             "symbol": order.request.symbol,
             "position": order.order,
             "volume": order.volume,
-            "type": mt5.ORDER_TYPE_SELL,
+            "type": mt5.ORDER_TYPE_BUY,
             "price": mt5.symbol_info_tick(order.request.symbol).ask,
             "deviation": deviation,
             "type_filling": order.request.type_filling,
@@ -496,6 +496,43 @@ class MT5:
             for order in positions:
                 print(order)
             return len(positions), positions
+    
+    @staticmethod
+    def remove_pending_order(order):
+
+        request = {
+            "action": mt5.TRADE_ACTION_REMOVE,
+            "order": order,
+        }
+
+        remove_order = mt5.order_send(request)
+        MT5.print_request(remove_order)
+
+        return remove_order
+    
+    @staticmethod
+    def remove_all_pending_orders():
+        
+        orders = mt5.orders_get()
+        print(orders)
+
+        if orders == None:
+
+            print('No orders!')
+            return
+
+        else:
+
+            for order in orders:
+                
+                MT5.remove_pending_order(order.ticket)
+                print('All orders closed!')
+    
+    @staticmethod
+    def close_all_orders():
+
+        orders = mt5.positions_get()
+        print(orders)
 
     @staticmethod
     def delta_from_open(symbol, timeframe = mt5.TIMEFRAME_M15):
