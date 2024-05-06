@@ -32,7 +32,7 @@ if __name__ == "__main__":
     # -- Specific strategies input
     # Candle time to strategies time dependent
     times = [f"{hour:02d}:{minute:02d}" for hour in range(24) for minute in range(0, 60, 5)]
-    candles_shifts = range(12) #8*12=96, 12 = 1 hour
+    candles_shifts = range(12*1) #8*12=96, 12 = 1 hour
  
     df_parameters = datahandling.read_minimum_trading_parameters(min_trading_parameters_path)
     # =========================================================================================================
@@ -45,8 +45,6 @@ if __name__ == "__main__":
     # --- strategy check ---
     strategies = datahandling.init_strategy_results_df()
     
-
-
     strategy_p = MP_LoopStrategies.open_at_time_shift_close(df_csv_path, dates, symbols, tfs, times, candles_shifts, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
     strategies = pd.concat([strategies, strategy_p])
     print(f'Strategy analysis time: {dt.datetime.now()-initial_time}')

@@ -9,15 +9,24 @@ import pandas as pd
 class datahandling: 
 
     @staticmethod
-    def save_all_symbols(path_to_save_csv, print_symbols=False):
+    def save_all_symbols(path_to_save_csv, groups = '', print_symbols=False):
 
         MT5.initialize()
 
-        all_symbols_info = mt5.symbols_get()
-        all_symbols = []
+        if groups == '':
+            all_symbols_info = mt5.symbols_get()
+            all_symbols = []
 
-        for i in all_symbols_info:
-            all_symbols.append(i.name)
+            for i in all_symbols_info:
+                all_symbols.append(i.name)
+        
+        else:
+            all_symbols_info = mt5.symbols_get(group=groups)
+            all_symbols = []
+
+            for i in all_symbols_info:
+                all_symbols.append(i.name)
+
         print(f'Total symbols available: {len(all_symbols)}')
         if print_symbols:
             print()

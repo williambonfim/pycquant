@@ -405,20 +405,23 @@ class MP_LoopStrategies:
     def open_at_time_shift_close(df_csv_path, dates, symbols, tfs, times, candles_shifts, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
+        tasks =[]
 
         for symbol in symbols:
             for tf in tfs:
 
                 df = datahandling.compile_data(df_csv_path, symbol, tf)
 
-                tasks = [(df, date, symbol, tf, time, candles_shift, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume)
+                t = [(df, date, symbol, tf, time, candles_shift, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume)
                         for date in dates for time in times for candles_shift in candles_shifts]
                 
-                with Pool() as pool:
-                    results = pool.map(Workers.worker_1, tasks)
+                tasks = tasks + t
                 
-                for result in results:
-                    df_results = pd.concat([df_results, result])
+        with Pool() as pool:
+            results = pool.map(Workers.worker_1, tasks)
+        
+        for result in results:
+            df_results = pd.concat([df_results, result])
                 
         return df_results
     
@@ -426,20 +429,23 @@ class MP_LoopStrategies:
     def pct_down_last_close_close(df_csv_path, dates, symbols, tfs, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
+        tasks =[]
 
         for symbol in symbols:
             for tf in tfs:
 
                 df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_close = True)
 
-                tasks = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_down_range]
                 
-                with Pool() as pool:
-                    results = pool.map(Workers.worker_2, tasks)
+                tasks = tasks + t
+                
+        with Pool() as pool:
+            results = pool.map(Workers.worker_2, tasks)
 
-                for result in results:
-                    df_results = pd.concat([df_results, result])
+        for result in results:
+            df_results = pd.concat([df_results, result])
         
         return df_results
     
@@ -447,20 +453,23 @@ class MP_LoopStrategies:
     def pct_up_last_close_close(df_csv_path, dates, symbols, tfs, pct_up_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
+        tasks = []
 
         for symbol in symbols:
             for tf in tfs:
 
                 df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_close = True)
 
-                tasks = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_up_range]
                 
-                with Pool() as pool:
-                    results = pool.map(Workers.worker_3, tasks)
+                tasks = tasks + t
+                
+        with Pool() as pool:
+            results = pool.map(Workers.worker_3, tasks)
 
-                for result in results:
-                    df_results = pd.concat([df_results, result])
+        for result in results:
+            df_results = pd.concat([df_results, result])
         
         return df_results
 
@@ -468,20 +477,23 @@ class MP_LoopStrategies:
     def pct_down_last_open_close(df_csv_path, dates, symbols, tfs, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
+        tasks = []
 
         for symbol in symbols:
             for tf in tfs:
 
                 df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_open = True)
 
-                tasks = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_down_range]
                 
-                with Pool() as pool:
-                    results = pool.map(Workers.worker_4, tasks)
+                tasks = tasks + t
 
-                for result in results:
-                    df_results = pd.concat([df_results, result])
+        with Pool() as pool:
+            results = pool.map(Workers.worker_4, tasks)
+
+        for result in results:
+            df_results = pd.concat([df_results, result])
         
         return df_results
 
@@ -489,20 +501,23 @@ class MP_LoopStrategies:
     def pct_up_last_open_close(df_csv_path, dates, symbols, tfs, pct_up_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
+        tasks = []
 
         for symbol in symbols:
             for tf in tfs:
 
                 df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_open = True)
 
-                tasks = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_up_range]
                 
-                with Pool() as pool:
-                    results = pool.map(Workers.worker_5, tasks)
+                tasks = tasks + t
 
-                for result in results:
-                    df_results = pd.concat([df_results, result])
+        with Pool() as pool:
+            results = pool.map(Workers.worker_5, tasks)
+
+        for result in results:
+            df_results = pd.concat([df_results, result])
         
         return df_results
 
@@ -510,20 +525,23 @@ class MP_LoopStrategies:
     def pct_down_current_open_close(df_csv_path, dates, symbols, tfs, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
+        tasks = []
 
         for symbol in symbols:
             for tf in tfs:
 
                 df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_current_open = True)
 
-                tasks = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_down_range]
                 
-                with Pool() as pool:
-                    results = pool.map(Workers.worker_6, tasks)
+                tasks = tasks + t
 
-                for result in results:
-                    df_results = pd.concat([df_results, result])
+        with Pool() as pool:
+            results = pool.map(Workers.worker_6, tasks)
+
+        for result in results:
+            df_results = pd.concat([df_results, result])
         
         return df_results
 
@@ -531,20 +549,23 @@ class MP_LoopStrategies:
     def pct_up_current_open_close(df_csv_path, dates, symbols, tfs, pct_up_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
+        tasks = []
 
         for symbol in symbols:
             for tf in tfs:
 
                 df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_current_open = True)
 
-                tasks = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_up_range]
-                
-                with Pool() as pool:
-                    results = pool.map(Workers.worker_7, tasks)
 
-                for result in results:
-                    df_results = pd.concat([df_results, result])
+                tasks = tasks + t
+
+        with Pool() as pool:
+            results = pool.map(Workers.worker_7, tasks)
+
+        for result in results:
+            df_results = pd.concat([df_results, result])
         
         return df_results
 
@@ -552,19 +573,22 @@ class MP_LoopStrategies:
     def open_at_time_close(df_csv_path, dates, symbols, tfs, times, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 
         df_results = init_strategy_results_df()
+        tasks = []
 
         for symbol in symbols:
             for tf in tfs:
 
                 df = datahandling.compile_data(df_csv_path, symbol, tf)
 
-                tasks = [(df, date, symbol, tf, time, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume)
+                t = [(df, date, symbol, tf, time, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume)
                         for date in dates for time in times]
                 
-                with Pool() as pool:
-                    results = pool.map(Workers.worker_8, tasks)
-                
-                for result in results:
-                    df_results = pd.concat([df_results, result])
+                tasks = tasks + t
+
+        with Pool() as pool:
+            results = pool.map(Workers.worker_8, tasks)
+        
+        for result in results:
+            df_results = pd.concat([df_results, result])
                 
         return df_results
