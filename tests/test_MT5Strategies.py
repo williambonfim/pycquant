@@ -68,7 +68,7 @@ if daily:
     for strategy in strategies:
         strategy.place_order()
 
-at_time = True
+at_time = False
 if at_time:
     strategies = []
 

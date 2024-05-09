@@ -28,13 +28,13 @@ class PctStrategies:
     def comment_strategy(pct, last_close, last_open, current_open):
 
         if last_close:
-            return f'python script-LC'
+            return f'PyS-LC {pct}'
         if last_open:
-            return f'python script-LO'
+            return f'PyS-LO {pct}'
         if current_open:
-            return f'python script-CO'
+            return f'PyS-CO {pct}'
         else:
-            return 'python script'
+            return 'PyS'
 
     def check_reference(abc) -> None:
         
@@ -135,7 +135,7 @@ class OpenCloseAtTimeStrategies():
 
     def comment_strategy(open_order_at_time, close_order_at_time):
 
-        return f'python script-AtTime:' #{open_order_at_time}/{close_order_at_time}'
+        return f'PyS-AtT: {open_order_at_time}/{close_order_at_time}'
 
     # Open the buy or sell order
     def place_order(abc):

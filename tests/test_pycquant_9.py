@@ -103,6 +103,7 @@ if __name__ == "__main__":
     print(f'Strategy #7 analysis time: {dt.datetime.now()-strat_time}')
     print()
 
+    symbols = ['Ger40', 'HKInd', 'Usa500', 'UsaTec', 'UsaInd', 'UsaRus', 'Bra50', 'Jp225', 'Aus200']
     strat_time = dt.datetime.now()
     strategy4 = MP_LoopStrategies.open_at_time_shift_close(df_csv_path, dates, symbols, tfs, times, candles_shifts, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
     strategies = pd.concat([strategies, strategy4])

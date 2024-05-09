@@ -246,13 +246,13 @@ class MT5:
     def close_open_buy(order, deviation = 10):
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
-            "symbol": order.request.symbol,
-            "position": order.order,
+            "symbol": order.symbol,
+            "position": order.ticket,
             "volume": order.volume,
             "type": mt5.ORDER_TYPE_SELL,
-            "price": mt5.symbol_info_tick(order.request.symbol).bid,
+            "price": mt5.symbol_info_tick(order.symbol).bid,
             "deviation": deviation,
-            "type_filling": order.request.type_filling,
+            "type_filling": mt5.ORDER_FILLING_FOK,
             "type_time": mt5.ORDER_TIME_GTC
         }
 
@@ -432,13 +432,13 @@ class MT5:
     def close_open_sell(order, deviation = 10):
         request = {
             "action": mt5.TRADE_ACTION_DEAL,
-            "symbol": order.request.symbol,
-            "position": order.order,
+            "symbol": order.symbol,
+            "position": order.ticket,
             "volume": order.volume,
             "type": mt5.ORDER_TYPE_BUY,
-            "price": mt5.symbol_info_tick(order.request.symbol).ask,
+            "price": mt5.symbol_info_tick(order.symbol).ask,
             "deviation": deviation,
-            "type_filling": order.request.type_filling,
+            "type_filling": mt5.ORDER_FILLING_FOK,
             "type_time": mt5.ORDER_TIME_GTC
         }
 
@@ -446,12 +446,12 @@ class MT5:
         return close_order
 
     @staticmethod
-    def close_by(open_order, order_close_by):
+    def close_by(symbol, open_order_ticket, order_close_by_ticket):
         request = {
             "action": mt5.TRADE_ACTION_CLOSE_BY,
-            "symbol": open_order.request.symbol,
-            "position": open_order.order,
-            "position_by": order_close_by.order,
+            "symbol": symbol,
+            "position": open_order_ticket,
+            "position_by": order_close_by_ticket,
             "type_time": mt5.ORDER_TIME_GTC
         }
 
@@ -514,25 +514,42 @@ class MT5:
     def remove_all_pending_orders():
         
         orders = mt5.orders_get()
-        print(orders)
 
-        if orders == None:
-
+        if orders == ():
             print('No orders!')
             return
 
         else:
-
-            for order in orders:
-                
+            for order in orders:                
                 MT5.remove_pending_order(order.ticket)
-                print('All orders closed!')
+            print('All orders closed!')
+    
+    @staticmethod
+    def close_order(order):
+
+        trade_mode = mt5.account_info()
+
+        if order.type == 1:
+            
+            close_order = MT5.close_open_sell(order)
+            MT5.print_request(close_order)
+        
+        elif order.type == 0:
+
+            close_order = MT5.close_open_buy(order)
+            MT5.print_request(close_order)
+
+        if trade_mode == 2:
+            MT5.close_by(close_order.request.symbol, order.ticket, close_order.order)
+
+        return close_order
     
     @staticmethod
     def close_all_orders():
 
         orders = mt5.positions_get()
-        print(orders)
+        for order in orders:
+            MT5.close_order(order)
 
     @staticmethod
     def delta_from_open(symbol, timeframe = mt5.TIMEFRAME_M15):
