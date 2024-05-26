@@ -112,7 +112,7 @@ if __name__ == "__main__":
 
     # ------
 
-    strategies = strategies.sort_values(by=['%_System_result'], ascending=False)
+    #strategies = strategies.sort_values(by=['%_System_result'], ascending=False)
 
     #print(strategies.to_string())
     print(f'No. of strategies: {len(strategies)}')

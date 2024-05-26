@@ -54,7 +54,7 @@ def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct_last_close=False
     if save_to_csv_path != '':
         df.to_csv(f'{save_to_csv_path}/{symbol}_{tf}.csv')
 
-    print(f'{symbol}_{tf} compiled')
+    #print(f'{symbol}_{tf} compiled')
 
     # Return the dataframe
     return df
