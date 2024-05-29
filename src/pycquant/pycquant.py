@@ -3,7 +3,7 @@ import datahandling
 from utils import symbol_selection, init_strategy_results_df, print_progress_bar, print_symbol_df, drop_data_before_initial_date
 pd.options.mode.copy_on_write = True
 
-from multiprocessing import Pool
+from multiprocessing import Pool, Lock, Manager
 
 class QuantStrategies:
 
@@ -416,7 +416,8 @@ class MP_LoopStrategies:
                         for date in dates for time in times for candles_shift in candles_shifts]
                 
                 tasks = tasks + t
-                
+        m = Manager()
+        lock = m.Lock()
         with Pool() as pool:
             results = pool.map(Workers.worker_1, tasks)
         

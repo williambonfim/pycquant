@@ -55,7 +55,8 @@ if __name__ == "__main__":
 
     tfs=['D1']
     dates = [dt.date(2023,1,1), dt.date(2023,11,1), dt.date(2024,1,1)]
-    pctstrat = False
+    pctstrat = True
+
     if pctstrat:
         strat_time = dt.datetime.now()
         strategy1 = MP_LoopStrategies.pct_down_last_close_close(df_csv_path, dates, symbols, tfs, [-x for x in pct_range], min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
@@ -102,7 +103,7 @@ if __name__ == "__main__":
     strategies = pd.concat([strategies, strategy3])
     print(f'Strategy #7 analysis time: {dt.datetime.now()-strat_time}')
     print()
-    quit(0)
+
     symbols = ['Ger40', 'HKInd', 'Usa500', 'UsaTec', 'UsaInd', 'UsaRus', 'Bra50', 'Jp225', 'Aus200']
     strat_time = dt.datetime.now()
     strategy4 = MP_LoopStrategies.open_at_time_shift_close(df_csv_path, dates, symbols, tfs, times, candles_shifts, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)

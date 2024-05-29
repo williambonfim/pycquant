@@ -61,8 +61,10 @@ def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct_last_close=False
 
 def save_analysis_results(df, csv_file_path) -> None:
     
-    current_dt = dt.datetime.now()
-    file_name = csv_file_path + f'/analysis_{current_dt}.csv'
+    current_dt = dt.datetime.strftime(dt.datetime.now(), '%Y-%m-%d--%H-%M-%S')
+
+    file_name = csv_file_path + f'analysis_{current_dt}.csv'
+    
     df.to_csv(file_name, index=False)
 
 def read_analysis_csv_data(csv_file_path, last_analysis_No):
