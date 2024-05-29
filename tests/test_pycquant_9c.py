@@ -1,7 +1,7 @@
 from secret.local_settings import pycquant_path, df_csv_path, analysis_data_csv, min_trading_parameters_path, all_symbols_path
 import sys
 sys.path.insert(0, pycquant_path)
-from pycquant import MP_LoopStrategies
+from pycquant import MP_LoopStrategies, MP_comb_LoopStrategies
 import datahandling
 import datetime as dt
 import pandas as pd
@@ -58,11 +58,19 @@ if __name__ == "__main__":
     pctstrat = True
     if pctstrat:
         strat_time = dt.datetime.now()
-        strategy1 = MP_LoopStrategies.pct_down_last_close_close(df_csv_path, dates, symbols, tfs, [-x for x in pct_range], min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
+        strategy1 = MP_comb_LoopStrategies.daily(df_csv_path, dates, symbols, tfs, pct_range, [-x for x in pct_range], min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
+        #strategy1 = MP_LoopStrategies.pct_down_last_close_close(df_csv_path, dates, symbols, tfs, [-x for x in pct_range], min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
         strategies = pd.concat([strategies, strategy1])
         print(f'Strategy #1 analysis time: {dt.datetime.now()-strat_time}')
         print()
+        print(f'No. of strategies: {len(strategies)}')
 
+        final_time = dt.datetime.now()
+        total_time = final_time-initial_time
+        print(strategies)
+        print(f'Total analysis time: {total_time}')
+        quit()
+        quit()
         strat_time = dt.datetime.now()
         strategy2 = MP_LoopStrategies.pct_up_last_close_close(df_csv_path, dates, symbols, tfs, pct_range, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
         strategies = pd.concat([strategies, strategy2])
@@ -92,13 +100,6 @@ if __name__ == "__main__":
         strategies = pd.concat([strategies, strategy8])
         print(f'Strategy #6 analysis time: {dt.datetime.now()-strat_time}')
         print()
-
-        print(f'No. of strategies: {len(strategies)}')
-
-        final_time = dt.datetime.now()
-        total_time = final_time-initial_time
-        print(f'Total analysis time: {total_time}')
-        quit()
 
     tfs = ['M5']
     min_No_trade    = 12

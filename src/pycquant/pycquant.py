@@ -3,7 +3,7 @@ import datahandling
 from utils import symbol_selection, init_strategy_results_df, print_progress_bar, print_symbol_df, drop_data_before_initial_date
 pd.options.mode.copy_on_write = True
 
-from multiprocessing import Pool, Lock, Manager
+from multiprocessing import Pool
 
 class QuantStrategies:
 
@@ -416,8 +416,7 @@ class MP_LoopStrategies:
                         for date in dates for time in times for candles_shift in candles_shifts]
                 
                 tasks = tasks + t
-        m = Manager()
-        lock = m.Lock()
+
         with Pool() as pool:
             results = pool.map(Workers.worker_1, tasks)
         
@@ -592,4 +591,112 @@ class MP_LoopStrategies:
         for result in results:
             df_results = pd.concat([df_results, result])
                 
+        return df_results
+
+class MP_comb_LoopStrategies:
+
+    @staticmethod
+    def daily(df_csv_path, dates, symbols, tfs, pct_up_range, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
+
+        df_results = init_strategy_results_df()
+        
+        # worker_2
+        tasks2 =[]
+ 
+        for symbol in symbols:
+            for tf in tfs:
+
+                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_close = True)
+
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                        for date in dates for target_pct in pct_down_range]
+                
+                tasks2 = tasks2 + t
+        
+        # worker_3
+        tasks3 = []
+
+        for symbol in symbols:
+            for tf in tfs:
+
+                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_close = True)
+
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                        for date in dates for target_pct in pct_up_range]
+                
+                tasks3 = tasks3 + t       
+
+        # worker_4
+        tasks4 = []
+
+        for symbol in symbols:
+            for tf in tfs:
+
+                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_open = True)
+
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                        for date in dates for target_pct in pct_down_range]
+                
+                tasks4 = tasks4 + t
+
+        # worker_5
+        tasks5 = []
+
+        for symbol in symbols:
+            for tf in tfs:
+
+                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_open = True)
+
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                        for date in dates for target_pct in pct_up_range]
+                
+                tasks5 = tasks5 + t
+
+        # worker_6
+        tasks6 = []
+
+        for symbol in symbols:
+            for tf in tfs:
+
+                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_current_open = True)
+
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                        for date in dates for target_pct in pct_down_range]
+                
+                tasks6 = tasks6 + t
+
+        # worker_7
+        tasks7 = []     
+
+        for symbol in symbols:
+            for tf in tfs:
+
+                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_current_open = True)
+
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                        for date in dates for target_pct in pct_up_range]
+
+                tasks7 = tasks7 + t
+        
+        results =[]
+        def combine_results(new_results):
+            results.extend(new_results)         
+        
+        with Pool() as pool:
+            results_worker_2 = pool.map_async(Workers.worker_2, tasks2, callback=combine_results)
+            results_worker_2.wait()
+            results_worker_3 = pool.map_async(Workers.worker_3, tasks3, callback=combine_results)
+            results_worker_3.wait()
+            results_worker_4 = pool.map_async(Workers.worker_4, tasks4, callback=combine_results)
+            results_worker_4.wait()
+            results_worker_5 = pool.map_async(Workers.worker_5, tasks5, callback=combine_results)
+            results_worker_5.wait()
+            results_worker_6 = pool.map_async(Workers.worker_6, tasks6, callback=combine_results)
+            results_worker_6.wait()
+            results_worker_7 = pool.map_async(Workers.worker_7, tasks7, callback=combine_results)
+            results_worker_7.wait()
+
+        for result in results:
+            df_results = pd.concat([df_results, result])
+        
         return df_results
