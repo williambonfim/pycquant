@@ -603,12 +603,18 @@ class MP_comb_LoopStrategies:
         # worker_2
         tasks2 =[]
         tasks3 = []
+        tasks4 = []
+        tasks5 = []
+        tasks6 = []
+        tasks7 = []
 
  
         for symbol in symbols:
             for tf in tfs:
 
-                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_close = True)
+                oldest = min(dates)
+
+                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_close = True, date_0=oldest)
 
                 t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_down_range]
@@ -618,7 +624,31 @@ class MP_comb_LoopStrategies:
                 t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_up_range]
                 
-                tasks3 = tasks3 + t       
+                tasks3 = tasks3 + t
+
+                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_open = True, date_0=oldest)
+
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                        for date in dates for target_pct in pct_down_range]
+                
+                tasks4 = tasks4 + t
+        
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                        for date in dates for target_pct in pct_up_range]
+                
+                tasks5 = tasks5 + t  
+
+                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_current_open = True,date_0=oldest)
+
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                        for date in dates for target_pct in pct_down_range]
+                
+                tasks6 = tasks6 + t
+        
+                t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
+                        for date in dates for target_pct in pct_up_range]
+                
+                tasks7 = tasks7 + t         
 
         
         results =[]
@@ -630,13 +660,13 @@ class MP_comb_LoopStrategies:
             results_worker_2.wait()
             results_worker_3 = pool.map_async(Workers.worker_3, tasks3, callback=combine_results)
             results_worker_3.wait()
-            results_worker_4 = pool.map_async(Workers.worker_4, tasks2, callback=combine_results)
+            results_worker_4 = pool.map_async(Workers.worker_4, tasks4, callback=combine_results)
             results_worker_4.wait()
-            results_worker_5 = pool.map_async(Workers.worker_5, tasks3, callback=combine_results)
+            results_worker_5 = pool.map_async(Workers.worker_5, tasks5, callback=combine_results)
             results_worker_5.wait()
-            results_worker_6 = pool.map_async(Workers.worker_6, tasks2, callback=combine_results)
+            results_worker_6 = pool.map_async(Workers.worker_6, tasks6, callback=combine_results)
             results_worker_6.wait()
-            results_worker_7 = pool.map_async(Workers.worker_7, tasks3, callback=combine_results)
+            results_worker_7 = pool.map_async(Workers.worker_7, tasks7, callback=combine_results)
             results_worker_7.wait()
 
         for result in results:

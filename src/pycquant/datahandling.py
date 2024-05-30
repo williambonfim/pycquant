@@ -1,7 +1,8 @@
 import pandas as pd
 import datetime as dt
 import os
-from utils import init_strategy_results_df
+from utils import drop_data_before_initial_date, init_strategy_results_df
+
 
 def update_D1_data(csv_original_path, symbols) -> None:
     tf = 'D1'
@@ -13,7 +14,7 @@ def update_D1_data(csv_original_path, symbols) -> None:
         df.set_index('time', inplace=True)
         df.to_csv(f'{csv_original_path}/{tf}_{symbol}.csv')
 
-def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct_last_close=False, calc_pct_last_open=False, calc_pct_current_open=False, save_to_csv_path = ''):
+def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct_last_close=False, calc_pct_last_open=False, calc_pct_current_open=False, save_to_csv_path = '', date_0=''):
 
     # Read .csv file from a local path based on the ticker name and timeframe name
     df = pd.read_csv('{}/{}_{}.csv'.format(csv_original_path, tf, symbol))
@@ -27,6 +28,10 @@ def compile_data(csv_original_path, symbol, tf = 'M5', calc_pct_last_close=False
         df['time'] = pd.to_datetime(df['time'])
         df.set_index('time', inplace=True)
 
+    if date_0 != '':
+        # Drop data there is not going to be used before the calculations
+        df = drop_data_before_initial_date(df, date_0)
+        
     # Drop columns that will not be used
     df.drop(['spread', 'real_volume', 'tick_volume'], axis=1, inplace=True)
 
