@@ -602,6 +602,11 @@ class MP_comb_LoopStrategies:
         
         # worker_2
         tasks2 =[]
+        tasks3 = []
+        tasks4 = []
+        tasks5 = []
+        tasks6 = []
+        tasks7 = []
  
         for symbol in symbols:
             for tf in tfs:
@@ -613,65 +618,25 @@ class MP_comb_LoopStrategies:
                 
                 tasks2 = tasks2 + t
         
-        # worker_3
-        tasks3 = []
-
-        for symbol in symbols:
-            for tf in tfs:
-
-                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_close = True)
-
                 t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_up_range]
                 
                 tasks3 = tasks3 + t       
-
-        # worker_4
-        tasks4 = []
-
-        for symbol in symbols:
-            for tf in tfs:
-
-                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_open = True)
 
                 t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_down_range]
                 
                 tasks4 = tasks4 + t
 
-        # worker_5
-        tasks5 = []
-
-        for symbol in symbols:
-            for tf in tfs:
-
-                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_last_open = True)
-
                 t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_up_range]
                 
                 tasks5 = tasks5 + t
 
-        # worker_6
-        tasks6 = []
-
-        for symbol in symbols:
-            for tf in tfs:
-
-                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_current_open = True)
-
                 t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_down_range]
                 
                 tasks6 = tasks6 + t
-
-        # worker_7
-        tasks7 = []     
-
-        for symbol in symbols:
-            for tf in tfs:
-
-                df = datahandling.compile_data(df_csv_path, symbol, tf, calc_pct_current_open = True)
 
                 t = [(df, date, symbol, tf, target_pct, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume) 
                         for date in dates for target_pct in pct_up_range]
