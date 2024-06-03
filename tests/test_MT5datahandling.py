@@ -11,6 +11,7 @@ from datahandling import update_D1_data
 
 # -------------------
 # Save a list of all available symbols in the current MT5 account
+no_of_days = int(input('Enter the number of days to be downloaded from MT5: '))
 
 group = '*,!*.*, !*Jan*, !*Feb*, !*Mar*, !*Apr*, !*May*, !*Jun*, !*Jul*, !*Aug*,, !*Sep*,, !*Oct*, !*Nov*, !*Dec*'
 symbols = mt5.datahandling.save_all_symbols(symbols_file_path, groups=group, print_symbols=False)
@@ -21,7 +22,7 @@ symbols = mt5.datahandling.save_all_symbols(symbols_file_path, groups=group, pri
 # Save symbols candle data from MT5
 
 tfs = ['D1']
-number_of_candles = 10 #15 for 1D - 2000 for 5 days M5 - 300 for 1 day M5
+number_of_candles = no_of_days #15 for 1D - 2000 for 5 days M5 - 300 for 1 day M5
 
 start_time = dt.datetime.now()
 
@@ -41,7 +42,7 @@ mt5.datahandling.save_multiple_minimum_trading_parameters(symbols, min_trading_p
 
 #symbols = ['Ger40', 'HKInd', 'Usa500', 'UsaTec', 'UsaInd', 'UsaRus', 'Bra50', 'Jp225', 'Aus200']
 tfs = ['M5']
-number_of_candles = 300 * 10
+number_of_candles = 300 * no_of_days
 
 start_time = dt.datetime.now()
 mt5.datahandling.save_multiple_candle_data_to_csv(symbols, tfs, candle_file_path, number_of_candles)
