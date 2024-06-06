@@ -68,7 +68,7 @@ def save_analysis_results(df, csv_file_path) -> None:
     
     current_dt = dt.datetime.strftime(dt.datetime.now(), '%Y-%m-%d--%H-%M-%S')
 
-    file_name = csv_file_path + f'analysis_{current_dt}.csv'
+    file_name = csv_file_path + f'analysis-{current_dt}.csv'
     
     df.to_csv(file_name, index=False)
 

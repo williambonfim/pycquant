@@ -57,7 +57,8 @@ if __name__ == "__main__":
 
     tfs=['D1']
     dates = [dt.date(2023,1,1), dt.date(2023,11,1), dt.date(2024,1,1)]
-    pctstrat = True
+    pctstrat = input('Do daily pct strategies analysis? (y/n): ').lower().strip() == 'y'
+    print()
     if pctstrat:
         strat_time = dt.datetime.now()
         strategy1 = MP_LoopStrategies.pct_down_last_close_close(local_settings.df_csv_path, dates, symbols, tfs, [-x for x in pct_range], min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
@@ -104,15 +105,33 @@ if __name__ == "__main__":
 
     tfs = ['M5']
     min_No_trade    = 12
-    dates = [dt.date(2024,2,14), dt.date(2024,3,1), dt.date(2024,3,15), dt.date(2024,4,1), dt.date(2024,4,14)]
+    dates = [dt.date(2024,2,14), dt.date(2024,3,1), dt.date(2024,3,15), dt.date(2024,4,1), dt.date(2024,4,14), dt.date(2024,5,1)]
     
-    strat_time = dt.datetime.now()
-    strategy3 = MP_LoopStrategies.open_at_time_close(local_settings.df_csv_path, dates, symbols, tfs, times, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
-    strategies = pd.concat([strategies, strategy3])
-    print(f'Strategy #7 analysis time: {dt.datetime.now()-strat_time}')
+    strat_at_time = input('Do M5 strategy analysis for ALL symbols? (y/n): ').lower().strip() == 'y'
     print()
 
-    symbols = ['Ger40', 'HKInd', 'Usa500', 'UsaTec', 'UsaInd', 'UsaRus', 'Bra50', 'Jp225', 'Aus200']
+    if strat_at_time:
+        strat_time = dt.datetime.now()
+        strategy3 = MP_LoopStrategies.open_at_time_close(local_settings.df_csv_path, dates, symbols, tfs, times, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
+        strategies = pd.concat([strategies, strategy3])
+        print(f'Strategy #7 analysis time: {dt.datetime.now()-strat_time}')
+        print()
+
+    symbols = ['Ger40', 'HKInd', 'Usa500', 'UsaTec', 'UsaInd', 'UsaRus', 'Bra50', 'Jp225', 'Aus200', 'GerMid50']
+
+    import_symbols = input('Import symbols from csv file? (y/n): ').lower().strip() == 'y'
+    print()
+
+    if import_symbols:
+        import csv
+        symbols = []
+        with open('symbols_to_analyse.csv', 'r') as csvfile:
+            csvreader = csv.reader(csvfile)
+            for row in csvreader:
+                symbols.append(row[0])
+    print('Symbols to be analysed: ')
+    print(symbols)
+
     strat_time = dt.datetime.now()
     strategy4 = MP_LoopStrategies.open_at_time_shift_close(local_settings.df_csv_path, dates, symbols, tfs, times, candles_shifts, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df=False, df_min_margin_volume=df_parameters)
     strategies = pd.concat([strategies, strategy4])
