@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import datahandling
 from utils import symbol_selection, init_strategy_results_df, print_progress_bar, print_symbol_df, drop_data_before_initial_date
 pd.options.mode.copy_on_write = True
@@ -168,6 +169,41 @@ class QuantStrategies:
             print_symbol_df(df, symbol, tf, entry_criteria, exit_criteria)
 
         df_results = symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume, at_time_strategy=True, entry_time=time, candle_shift=candles_shift)
+
+        return df_results
+    
+    @staticmethod
+    def open_at_time_shift_close_previous_candles(df, date_0, symbol, tf, time, candles_shift, candles_previous, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
+        # Get initial time and drop index before the initial date
+        df = drop_data_before_initial_date(df, date_0)
+
+        df['target'] = df['close'].shift(-candles_shift)
+        df['delta_price'] = df['close'].shift(1) - df['open'].shift(candles_previous)
+
+        df = df.between_time(time, time)
+
+        df['condition'] = df['delta_price'].apply(lambda x:1 if x>0 else (-1 if x<0 else 0))
+        #df['condition'] = np.where(df['delta_price']>1,1, -1)
+
+        df['pct_target'] = (df['target'] - df['open']) / df['open']
+        df['target'] = (df['target'] - df['open'])
+
+        df1 = df[df['condition'] != -1]
+        df2 = df[df['condition'] != 1]
+
+        entry_criteria1 = f'Open at {time}hrs, if last {candles_previous} candles are buying'
+        exit_criteria1 = f'Close after {candles_shift} candles'
+
+        entry_criteria2 = f'Open at {time}hrs, if last {candles_previous} candles are selling'
+        exit_criteria2 = f'Close after {candles_shift} candles'
+
+        if print_df:
+            print_symbol_df(df1, symbol, tf, entry_criteria1, exit_criteria1)
+            print_symbol_df(df2, symbol, tf, entry_criteria2, exit_criteria2)
+        
+        df_results = symbol_selection(df1, symbol, tf, entry_criteria1, exit_criteria1, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume, at_time_shift_previous=True, previous_buy=[True, candles_previous], entry_time=time, candle_shift=candles_shift)
+
+        df_results = pd.concat([df_results, symbol_selection(df2, symbol, tf, entry_criteria2, exit_criteria2, date_0, min_No_trade, max_allowed_sl, success_rate, no_last_trades, df_min_margin_volume=df_min_margin_volume, at_time_shift_previous=True, previous_buy=[False, candles_previous], entry_time=time, candle_shift=candles_shift)])
 
         return df_results
     
@@ -342,6 +378,7 @@ class Workers:
         df, date, symbol, tf, time, candles_shift, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume = task
         
         result = QuantStrategies.open_at_time_shift_close(df, date, symbol, tf, time, candles_shift, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume)
+
         return result
 
     @staticmethod
@@ -397,6 +434,15 @@ class Workers:
         df, date, symbol, tf, time, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume = task
         
         result = QuantStrategies.open_at_time_close(df, date, symbol, tf, time, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume)
+
+        return result
+    
+    @staticmethod
+    def worker_9(task):
+        df, date, symbol, tf, time, candles_shift, candles_previous, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume = task
+        
+        result = QuantStrategies.open_at_time_shift_close_previous_candles(df, date, symbol, tf, time, candles_shift, candles_previous, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume)
+        
         return result
 
 class MP_LoopStrategies:
@@ -412,8 +458,8 @@ class MP_LoopStrategies:
 
                 df = datahandling.compile_data(df_csv_path, symbol, tf)
 
-                t = [(df, date, symbol, tf, time, candles_shift, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume)
-                        for date in dates for time in times for candles_shift in candles_shifts]
+                t = [(df, date, symbol, tf, time, candle_shift, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume)
+                        for date in dates for time in times for candle_shift in candles_shifts]
                 
                 tasks = tasks + t
 
@@ -425,6 +471,30 @@ class MP_LoopStrategies:
                 
         return df_results
     
+    @staticmethod
+    def open_at_time_shift_close_previous_candles(df_csv_path, dates, symbols, tfs, times, candles_shifts, candles_previous, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
+
+        df_results = init_strategy_results_df()
+        tasks =[]
+
+        for symbol in symbols:
+            for tf in tfs:
+
+                df = datahandling.compile_data(df_csv_path, symbol, tf)
+
+                t = [(df, date, symbol, tf, time, candle_shift, candle_previous, min_No_trade, max_allowed_sl, success_rate, no_last_trades, print_df, df_min_margin_volume)
+                        for date in dates for time in times for candle_shift in candles_shifts for candle_previous in candles_previous]
+
+                tasks = tasks + t
+        
+        with Pool() as pool:
+            results = pool.map(Workers.worker_9, tasks)
+        
+        for result in results:
+            df_results = pd.concat([df_results, result])
+
+        return df_results
+
     @staticmethod
     def pct_down_last_close_close(df_csv_path, dates, symbols, tfs, pct_down_range, min_No_trade=1, max_allowed_sl=1, success_rate=0.4, no_last_trades=5, print_df=False, df_min_margin_volume=pd.DataFrame()):
 

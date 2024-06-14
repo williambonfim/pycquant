@@ -222,4 +222,112 @@ class OpenCloseAtTimeStrategies():
                         MT5.print_request(abc.close_order)
                         print()
 
+# ==============================================================
+class OpenCloseIfPreviousAtTimeStrategies():
+
+    def __init__(self, open_order_at_time, close_order_at_time, previous_candle_time, symbol, volume, buy=True, previous_buy=True, check_order=False):
+        self.open_order_at_time = open_order_at_time
+        self.close_order_at_time = close_order_at_time
+        self.symbol = symbol
+        self.volume = volume
+        self.comment = OpenCloseAtTimeStrategies.comment_strategy(open_order_at_time, close_order_at_time)
+        self.buy = buy
+        self.check_order = check_order
+        self.previous_candle_time = previous_candle_time
+        self.previous_buy = previous_buy
+        self.magic = 10002
+        self.checker = 0
+        self.order = []
+        self.close_order = []
+
+    def comment_strategy(open_order_at_time, close_order_at_time):
+
+        return f'PyS-AtT: {open_order_at_time}/{close_order_at_time}'
+
+    # Open the buy or sell order
+    def place_order(abc):
+        time0 = dt.datetime.now().time().replace(microsecond=0)
+        if time0 == abc.open_order_at_time:
+
+            if abc.checker == 0:
+                
+                if abc.buy == True:
+                    
+                    if abc.check_order:
+
+                        abc.order = MT5.check_buy_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
+                        abc.checker = 1
+                        print()
+                        MT5.print_request(abc.order)
+                        print()
+                    
+                    else:
+
+                        abc.order = MT5.buy_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
+                        abc.checker = 1
+                        print()
+                        MT5.print_request(abc.order)
+                        print()
+                
+                else:
+
+                    if abc.check_order:
+
+                        abc.order = MT5.check_sell_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
+                        abc.checker = 1
+                        print()
+                        MT5.print_request(abc.order)
+                        print()
+
+                    else:
+
+                        abc.order = MT5.sell_market(abc.symbol, abc.volume, comment = abc.comment, magic = abc.magic)
+                        abc.checker = 1
+                        print()
+                        MT5.print_request(abc.order)
+                        print()
+
+            else:
+                pass
+            
+        else:
+            pass
+
+    # Close the opened order
+    def close_opened_order(abc):
+        time0 = dt.datetime.now().time().replace(microsecond=0)
+
+        if time0 == abc.close_order_at_time:
+
+            if abc.checker == 1:
+
+                if abc.buy == True:
+
+                    if abc.check_order:
+                        print('Time to close opened buy...')
+                        abc.checker = 2
+
+                    else:
+
+                        abc.close_order = MT5.close_open_buy(abc.order)
+                        abc.checker = 2
+                        print()
+                        MT5.print_request(abc.close_order)
+                        print()
+                
+                else:
+
+                    if abc.check_order:
+                        print('Time to close opened sell...')
+                        abc.checker = 2
+
+                    else:
+
+                        abc.close_order = MT5.close_open_sell(abc.order)
+                        abc.checker = 2
+                        print()
+                        MT5.print_request(abc.close_order)
+                        print()
+
+
 

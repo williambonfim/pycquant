@@ -9,9 +9,9 @@ import pandas as pd
 class datahandling: 
 
     @staticmethod
-    def save_all_symbols(path_to_save_csv, groups = '', print_symbols=False):
+    def save_all_symbols(path_to_save_csv, groups = '', print_symbols=False, initialize=True):
 
-        MT5.initialize()
+        if initialize: MT5.initialize()
 
         if groups == '':
             all_symbols_info = mt5.symbols_get()
@@ -40,7 +40,7 @@ class datahandling:
 
         print(f'CSV files saved in {path_to_save_csv}.csv')
 
-        MT5.shutdown()
+        if initialize: MT5.shutdown()
 
         return all_symbols
 
@@ -96,9 +96,9 @@ class datahandling:
             return 'New data added.'
 
     @staticmethod
-    def save_multiple_candle_data_to_csv(symbols, tfs, csv_file_path, number_of_candles=15000):
+    def save_multiple_candle_data_to_csv(symbols, tfs, csv_file_path, number_of_candles=15000, initialize=True):
         
-        MT5.initialize()
+        if initialize: MT5.initialize()
 
         t = len(symbols) * len(tfs)
         i=0
@@ -112,7 +112,7 @@ class datahandling:
         print_progress_bar(1, 1, f'All symbols saved to csv.')
         print()
             
-        MT5.shutdown()
+        if initialize: MT5.shutdown()
 
     @staticmethod
     def get_minimum_trading_parameters(symbol, initialize=True, print_symbol_info=False):
@@ -138,9 +138,9 @@ class datahandling:
         return trading_parameters
 
     @staticmethod
-    def save_multiple_minimum_trading_parameters(symbols, csv_file_path):
+    def save_multiple_minimum_trading_parameters(symbols, csv_file_path, initialize=True):
         
-        MT5.initialize()
+        if initialize: MT5.initialize()
 
         import pandas as pd
         df = pd.DataFrame(columns = ['symbol', 'min_volume', 'min_margin', 'point', 'profit_per_10000points'])

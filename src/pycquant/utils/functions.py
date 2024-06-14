@@ -91,7 +91,7 @@ def strategy_text_buy(pct_tp, pct_sl, success_rate, pct_down):
             buy = 'True'
             return buy
 
-def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_trades=5, df_min_margin_volume=pd.DataFrame(), pct_strategy=False, pct=False, pct_down=False, last_close=False, last_open=False, current_open=False, at_time_strategy=False, entry_time='', candle_shift=0):
+def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_No_trade, max_allowed_sl, success_rate, no_trades=5, df_min_margin_volume=pd.DataFrame(), pct_strategy=False, pct=False, pct_down=False, last_close=False, last_open=False, current_open=False, at_time_strategy=False, at_time_shift_previous=False, previous_buy=[False, 1], entry_time='', candle_shift=0):
 
     df_results = init_strategy_results_df()
    
@@ -259,6 +259,43 @@ def symbol_selection(df, symbol, tf, entry_criteria, exit_criteria, date_0, min_
             h_1, m_1, s_1 = add_minutes_to_time(entry_time, hours_to_add=hours, minutes_to_add=minutes)
 
             strategy_text = f"strategies.append(OpenCloseAtTimeStrategies(dt.time({h_0},{m_0},{s_0}), dt.time({h_1},{m_1},{s_1}), '{symbol}', {df_min_margin_volume.loc[symbol, 'min_volume']}, buy={buy}, check_order=checkorder))"
+
+            df_results['strategy'] = strategy_text
+
+        elif at_time_shift_previous:
+            candle_size = int(tf[1:])
+            timeframe = tf[0]
+
+            if timeframe == 'M':
+                minutes = candle_size * (candle_shift + 1)
+                hours = -1
+                minutes_previous = -candle_size * previous_buy[1]
+                hours_previous = -1
+                
+            
+            elif timeframe == 'H':
+                hours = candle_size * (candle_shift + 1) - 1
+                minutes = 0
+                hours_previous = -candle_size * previous_buy[1]
+                minutes_previous = 0
+ 
+
+            if pct_tp >= success_rate:
+                buy = 'True'
+            elif pct_sl >= success_rate:
+                buy = 'False'
+            
+            if previous_buy[0]:
+                previous_buy_condition = 'True'
+            elif not previous_buy[0]:
+                previous_buy_condition = 'False'
+
+            
+            h_0, m_0, s_0 = add_minutes_to_time(entry_time, hours_to_add = -1, seconds_to_add=-1)
+            h_1, m_1, s_1 = add_minutes_to_time(entry_time, hours_to_add=hours, minutes_to_add=minutes)
+            h_2, m_2, s_2 = add_minutes_to_time(entry_time, hours_to_add = hours_previous, minutes_to_add=minutes_previous)
+
+            strategy_text = f"strategies.append(OpenCloseAtTimeIfPreviousStrategies(dt.time({h_0},{m_0},{s_0}), dt.time({h_1},{m_1},{s_1}), dt.time({h_2},{m_2},{s_2}), '{symbol}', {df_min_margin_volume.loc[symbol, 'min_volume']}, buy={buy}, previous_buy={previous_buy_condition}, check_order=checkorder))"
 
             df_results['strategy'] = strategy_text
 
